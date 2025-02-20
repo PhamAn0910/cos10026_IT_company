@@ -6,39 +6,57 @@
   <meta name="keywords"     content="HTML5, CSS">
   <meta name="author"       content="Le Ngoc Quynh Trang, Pham Truong Que An">
   <meta name="viewport"     content="width=device-width, initial-scale=1.0">
-  <title>AT | Home Page</title>
-  <link rel="stylesheet" href="style.css">
+  
+  <title>SonixWave | Home Page</title>
+
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap">
+
 </head>
 
 <body>
   <!-- Navigation Menu -->
   <header>
-    <nav>
-      <h1>AT</h1>
-        <ul>
-          <li><a href="index.html" class="active">Home</a></li>
-          <li><a href="jobs.html">Recruitment</a></li>
-          <li><a href="apply.html">Apply Now</a></li>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="enhancements.html">Enhancements</a></li>
-          <li><a href="mailto:105028463@student.swin.edu.au, 
-                      mailto:quynhtranglengoc@gmail.com">Contact</a></li>
+    <nav class="navbar">
+      <h1 class="logo"><a href="index.html">SonixWave</a></h1>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="jobs.html">Recruitment</a></li>
+            <li><a href="apply.html">Apply Now</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="enhancements.html">Enhancements</a></li>
+            <li><a href="mailto:105028463@student.swin.edu.au, 
+                        mailto:quynhtranglengoc@gmail.com">Contact</a></li>
         </ul>
     </nav>
   </header>
 
   <!-- Company Description & Graphic -->
-  <section id="company-description">
-    <figure>
-      <img src="styles/images (for background images used in CSS)/graphic.png" alt="Company Graphic">
-      <figcaption>
-        <h2>Join and Grow with us</h2>
-        <p>AT is an innovative IT company dedicated to empowering businesses with next-generation solutions. 
-            We foster growth, creativity, and technological excellence.
-        </p>
-      </figcaption>
+  <section id="company-description" class="hero-section">
+    <figure class="hero-content">
+        <!-- <img src="styles/images/company-banner.png" alt="Company Graphic" class="hero-image"> -->
+        <i class="hero-icon left shadow fa-solid fa-headphones "></i>
+        <i class="hero-icon left fa-solid fa-headphones "></i>
+        <i class="hero-icon right shadow fa-solid fa-guitar"></i>
+        <i class="hero-icon right fa-solid fa-guitar"></i>
+
+        <figcaption class="hero-text">
+            <h2 class="hero-title">Harmonizing Technology & Creativity</h2>
+            <h1 class="hero-highlight">Where Innovation <br> <span class="highlight">Meets Rhythm</span></h1>
+            <p class="hero-description">
+                SonixWave blends the power of IT with the soul of music, creating innovative digital solutions that strike the perfect chord. 
+                Whether you're a business seeking cutting-edge tech or an artist looking for digital transformation, we orchestrate success through creativity and technology.
+            </p>
+            <div class="hero-buttons">
+                <a href="jobs.html" class="btn primary-btn">Explore Jobs</a>
+                <a href="apply.html" class="btn secondary-btn">Join Us</a>
+            </div>
+        </figcaption>
     </figure>
   </section>
+
 
 </body>
 </html>
