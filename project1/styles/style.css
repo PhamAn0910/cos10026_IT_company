@@ -5,41 +5,51 @@
     --accent-color: #E91E63; /* Pink */
     --background-color: #FFFFFF; /* White */
     --text-color: #333333;
-    --font-main: 'Poppins', sans-serif;
+    --font-main: 'Public Sans', sans-serif;
 }
 
 body {
     font-family: var(--font-main);
-    background-color: var(--background-color);
+    background-color: rgb(242, 238, 231);
     color: var(--text-color);
-    margin: 0;
-    padding: 0;
+    /* margin: 0;
+    padding: 0; */
     line-height: 1.6;
 }
 
-/* Navigation */
-/* nav {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    padding: 1rem;
+.home-background {
+    font-family: var(--font-main);
+    background-color: white;
+    color: var(--text-color);
+    /* margin: 0;
+    padding: 0; */
+    line-height: 1.6;
+}
+
+/* Navigation in normal pages*/
+nav {
+    padding: 20px 2%;
+    position: absolute;
+    top: 30px;
+    left: 40%;
+    transform: translateX(-40%);
+    width: 90%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
     z-index: 1000;
 }
 
-nav h1 {
+/* nav h1 {
     color: var(--background-color);
     font-size: 1.8rem;
     font-weight: bold;
-}
+} */
 
 nav ul {
     list-style: none;
     display: flex;
-    gap: 15px;
+    gap: 25px;
 }
 
 nav ul li {
@@ -47,17 +57,29 @@ nav ul li {
 }
 
 nav ul li a {
-    color: var(--background-color);
     text-decoration: none;
-    font-size: 1.1rem;
-    padding: 0.5rem 1rem;
-    transition: background 0.3s ease;
-    border-radius: 5px;
+    color: #004d35;
+    font-size: 1rem;
+    transition: color 0.3s ease-in-out;
+    font-family: 'Public Sans', sans-serif;
 }
 
 nav ul li a:hover, .active {
-    background-color: var(--accent-color);
-} */
+    color: #ff70a6;
+} 
+
+.logo2 a{
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #004d35;
+    font-family: 'EB Garamond', serif;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.logo2 a:hover {
+    color: #ff70a6;
+}
 
 /* Forms */
 form {
@@ -94,15 +116,22 @@ button:hover {
 
 /* Footer */
 footer {
-    text-align: center;
-    padding: 20px;
-    background: var(--secondary-color);
-    color: var(--background-color);
+    margin-top: 100px;
     position: relative;
-    bottom: 0;
     width: 100%;
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-
+.footer-logo {
+    font-size: 19rem;
+    color: #013826;
+    margin-bottom: -11%;
+    margin-top: -100px;
+    font-family: 'EB Garamond', serif;
+}
 
 /* HOMEPAGE*/
 /* General Styles */
@@ -296,4 +325,68 @@ footer {
     50% {
         transform: translateX(-15px);
     }
+}
+
+/* JOB DESCRIPTION */
+.job-description {
+    padding: 10px 72px;
+    margin-top: 3em;
+}
+
+.page-title {
+    text-align: center;
+    font-family: 'EB Garamond', serif;
+    font-weight: 150;
+    font-size: 3rem;
+}
+
+.divider {
+    height: 1px; /* Thickness of the divider */
+    background-color: #333333a5; 
+    margin: 130px 72px 0 72px; 
+}
+
+.jd {
+    display: grid;
+    grid-template-columns: 1fr 3fr; /* Left: 1fr, Right: 4fr */
+    gap: 100px;
+    /* max-width: 900px; */
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.jd .left-grid {
+    grid-column: 1; /* Place h2 and first p in the left column */
+}
+
+.jd .right-grid {
+    grid-column: 2; /* Place h3 and all related content in the right column */
+}
+
+.job-title {
+    font-size: 1.9rem;
+    background-color: #ff70a6; /* Pink */
+    color: #3d1f15; /* Dark Brown */
+    font-family: 'EB Garamond', serif;
+    padding: 0 4px;
+}
+
+.unhighlighted, .highlighted {
+    font-weight: 500;
+    line-height: 1.3;
+}
+.unhighlighted {
+    color: #004d35;
+}
+.highlighted {
+    background-color: #ff70a6; /* Pink */
+    color: #3d1f15; /* Dark Brown */
+    padding: 0 15px 0 9px;
+}
+
+.white-area {
+    background-color: white;
+    padding: 3rem 5rem;
+    margin: 10px 0;
+    border-radius: 20px;
 }
