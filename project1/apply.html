@@ -6,8 +6,12 @@
   <meta name="keywords"     content="HTML5, CSS">
   <meta name="author"       content="Le Ngoc Quynh Trang, Pham Truong Que An">
   <meta name="viewport"     content="width=device-width, initial-scale=1.0">
-  <title>AT | Apply Now</title>
+  
+  <title>SonixWave | Apply Now</title>
+  
   <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap">
 </head>
 
 <body>
@@ -26,10 +30,12 @@
         </ul>
     </nav>
   </header>
+
+  <div class="divider"></div>
   
   <!-- Apply Form -->
   <main>
-    <h1>Job Application</h1>
+    <h1 class="page-title" id="form-title">Job Application</h1>
     <form action="https://mercury.swin.edu.au/it000000/formtest.php" method="post">
       <fieldset>
         <legend>Personal Details</legend>
@@ -108,7 +114,8 @@
       <fieldset>
         <legend>Job Application Skills</legend>
         <label for="skill-list">Skill list:</label><br>
-        <input type="checkbox" id="python" name="skill-list" value="Python" checked>
+        
+        <input type="checkbox" id="python" name="skill-list" value="Python">
         <label for="python">Python</label><br>
 
         <input type="checkbox" id="html-css" name="skill-list" value="HTML & CSS">
@@ -118,20 +125,24 @@
         <label for="javascript">JavaScript</label><br>
 
 
-        <input type="checkbox" id="java" name="skill-list" value="JavaScript">
-        <label for="java">JavaScript</label><br>
+        <input type="checkbox" id="java" name="skill-list" value="Java">
+        <label for="java">Java</label><br>
 
         <input type="checkbox" id="other-skills" name="skill-list" value="Other">
         <label for="other-skills">Other skills...</label><br>
 
         <label for="other-skills-text">Other skills (if any):</label><br>
         <textarea id="other-skills-text" name="other-skills-text" 
-        placeholder="Write any other relevant skills that you might have..." 
-        style="width: 220px; height: 100px;"></textarea><br>
+        placeholder="Write any other relevant skills that you might have..."></textarea><br>
       </fieldset>
 
       <input type="submit" value="Apply">
     </form>
   </main>
+
+  <footer>
+    <p>&copy; 2025 SonixWave. All rights reserved.</p>
+    <p class="footer-logo">SonixWave</p>
+    </footer>
 </body>
 </html>
