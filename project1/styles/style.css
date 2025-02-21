@@ -10,7 +10,7 @@
 
 body {
     font-family: var(--font-main);
-    background-color: rgb(242, 238, 231);
+    background-color: rgba(252, 247, 239, 0.693);
     color: var(--text-color);
     /* margin: 0;
     padding: 0; */
@@ -389,4 +389,5 @@ footer {
     padding: 3rem 5rem;
     margin: 10px 0;
     border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
