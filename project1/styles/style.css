@@ -629,3 +629,92 @@ footer {
     width: 24px; /* Ensures all icons take the same space */
     text-align: center; /* Centers smaller icons */
 }
+
+/* Timetable */
+.timetable {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 1136px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.timetable h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.timetable table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #f9f9f9;
+    border-radius: 12px;
+    /* overflow: hidden; */
+}
+
+.timetable th, .timetable td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.timetable th {
+    background: var(--pink);
+    color: white;
+    font-weight: bold;
+}
+
+.timetable td {
+    text-align: left;
+}
+
+.timetable td strong{
+    color: var(--dark-brown)
+}
+
+.timetable td:not(:empty) {
+    background: #fff;
+    border-left: 4px solid var(--pink);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    padding: 15px;
+}
+
+@media (max-width: 768px) {
+    .timetable table {
+        font-size: 0.8rem;
+    }
+
+    .timetable th, .timetable td {
+        padding: 10px;
+    }
+}
+
+.email {
+    margin: 50px 0 0 0;
+    font-size: 1.15rem;
+}
+
+.email h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.email p {
+    margin: 5px 0 0 20px;
+}
+
+.email a {
+    margin-left: 5px;
+    text-decoration: none;
+    color: var(--dark-green)
+}
+
+.email a:hover {
+    background-color: var(--pink);
+    color: white;
+}
