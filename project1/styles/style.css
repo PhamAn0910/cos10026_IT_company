@@ -482,7 +482,7 @@ footer {
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     padding: 2rem;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .info-header {
@@ -492,14 +492,14 @@ footer {
 }
 
 .info-header h1 {
-    font-size: 25px;
+    font-size: 23px;
     margin: 20px 0 0 0;
     white-space: nowrap; /* Prevent line breaks */
 }
 
 .info-header dt {
     margin-left: 20px;
-    font-size: 2.3rem;
+    font-size: 2rem;
     font-weight: 500;
     background-color: var(--pink);
     color: var(--dark-brown);
@@ -512,7 +512,7 @@ footer {
     background-color: transparent;
     color: var(--dark-green);
     padding: 0;
-    font-size: 4rem;
+    font-size: 3rem;
     font-weight: 510;
     margin-left: 30px;
     text-decoration: underline;
