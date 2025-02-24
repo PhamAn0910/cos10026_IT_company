@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="styles/style.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 </head>
 
 <body>
@@ -38,7 +40,7 @@
   <main class="job-description">
     <h1 class="page-title"><span>Career Opportunities</span></h1>
     
-    <section class="jd">
+    <section class="jd" data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">
         <section class="left-grid">
             <h2><span class="job-title">Data Analyst</span></h2>
                 <p><strong>Job Reference Number:</strong> DA123</p>
@@ -93,7 +95,7 @@
         </section>
     </section>
 
-    <section class="jd">
+    <section class="jd" data-aos="fade-up" data-aos-duration="1500" data-aos-once="true">
      <section class="left-grid">
       <h2><span class="job-title">Software Engineer &lpar;Backend&rpar;</span></h2>
       <!-- &lpar; and &rpar; = left & right parenthesis -->
@@ -179,3 +181,7 @@
 </body>
 
 </html>
+
+<script>
+    AOS.init();
+</script>

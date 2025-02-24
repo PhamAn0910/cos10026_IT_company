@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="styles/style.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 </head>
 
 <body>
@@ -37,7 +39,7 @@
   <main>
     <h1 class="page-title" id="form-title">Job Application</h1>
     <form action="https://mercury.swin.edu.au/it000000/formtest.php" method="post">
-      <fieldset>
+      <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend>Personal Details</legend>
         <label for="first-name">First Name:</label>
         <input type="text" id="first-name" name="first-name" 
@@ -56,7 +58,7 @@
         Our company hires candidates aged 20-50 years (ie.01/01/1975 - 31/12/2004)."><br>
       </fieldset>
 
-      <fieldset>
+      <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend>Gender</legend>
         <input type="radio" id="male" name="gender" value="male" required>
         <label for="male">Male</label>
@@ -66,7 +68,7 @@
         <label for="other">Other</label>
       </fieldset>
 
-      <fieldset>
+      <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend>Contact Details</legend>
         <label for="street-address">Street Address:</label>
         <input type="text" id="street-address" name="street-address" 
@@ -102,7 +104,7 @@
         pattern="[0-9 ]{8,12}" required><br>
       </fieldset>
 
-      <fieldset>
+      <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend>Job Application Details</legend>
         <label for="reference-num">Job Reference Number:</label>
         <input type="text" id="reference-num" name="reference-num" 
@@ -113,8 +115,8 @@
           <option value="CY987">
         </datalist>
       </fieldset>
-        
-      <fieldset>
+
+      <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend>Job Application Skills</legend>
         <label for="skill-list">Skill list:</label><br>
         
@@ -139,7 +141,7 @@
         placeholder="Write any other relevant skills that you might have..."></textarea><br>
       </fieldset>
 
-      <input type="submit" value="Apply">
+      <input type="submit" value="Apply" data-aos="zoom-in" data-aos-duration="800" data-aos-once="true">
     </form>
   </main>
 
@@ -149,3 +151,7 @@
   </footer>
 </body>
 </html>
+
+<script>
+    AOS.init();
+</script>
