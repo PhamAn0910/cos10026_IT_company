@@ -42,12 +42,12 @@
         <label for="first-name">First Name:</label>
         <input type="text" id="first-name" name="first-name" 
         maxlength="20" pattern="[A-za-z]{0,20}" required
-        title="Please enter your first name with alphabetic characters."><br>
+        title="Please enter your first name with a maximum of 20 alphabetic characters."><br>
 
         <label for="last-name">Last Name:</label>
         <input type="text" id="last-name" name="last-name" 
         maxlength="20" pattern="[A-za-z]{0,15}" required
-        title="Please enter your last name with alphabetic characters."><br>
+        title="Please enter your last name with a maximum of 20 alphabetic characters."><br>
 
         <label for="DOB">Date of Birth:</label>
         <input type="text" id="DOB" name="DOB" required placeholder="dd/mm/yyyy"
@@ -105,12 +105,15 @@
       <fieldset>
         <legend>Job Application Details</legend>
         <label for="reference-num">Job Reference Number:</label>
-        <input type="text" id="reference-num" name="reference" 
-        pattern="SE123|CY987" required
-        title="The numbers you enter should match the 
-        Position Reference Number in the Job Description"><br>
+        <input type="text" id="reference-num" name="reference-num" 
+        list="jobRef" required pattern="SE123|CY987" 
+        title="Please enter a valid job reference number from the list.">           
+        <datalist id="jobRef">
+          <option value="SE123">
+          <option value="CY987">
+        </datalist>
       </fieldset>
-
+        
       <fieldset>
         <legend>Job Application Skills</legend>
         <label for="skill-list">Skill list:</label><br>
