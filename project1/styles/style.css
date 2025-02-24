@@ -19,6 +19,8 @@ description: refer to index.html, jobs.html, apply.html, about.html, enhancement
 
 html {
     scroll-behavior: smooth;
+    min-width: 574px;
+    overflow-x: auto;
 }
 
 body {
@@ -167,6 +169,7 @@ select {
 input[type="submit"] {
     width: 20%;
     border-radius: 10px;
+    padding: auto;
     color: white;
     background-color: #004d35;
     font-weight: 500;
@@ -876,7 +879,7 @@ footer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 35px;
-    padding: 40px;
+    padding: 40px 72px;
 }
 
 .enhancements section {
@@ -930,10 +933,22 @@ footer {
     margin-left: 5px;
     text-decoration: none;
     color: var(--dark-green);
+    font-weight: bold;
     transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
 .link:hover {
     background-color: var(--pink);
     color: white;
+}
+
+@media (max-width: 915px) {
+    .enhancements {
+        grid-template-columns: 1fr; /* Forces a single column layout */
+        padding: 30px 72px; /* Less padding for small screens */
+    }
+
+    .enhancements h1 {
+        grid-column: span 1; /* Ensures title fits in a single column */
+    }
 }
