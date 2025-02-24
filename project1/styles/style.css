@@ -39,28 +39,22 @@ body {
 
 /* Navigation in normal pages*/
 nav {
-    padding: 20px 2%;
-    position: absolute;
+    padding: 20px 8%;
+    position: relative;
     top: 30px;
-    left: 40%;
-    transform: translateX(-40%);
-    width: 90%;
+    left: 0;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 1000;
 }
 
-/* nav h1 {
-    color: var(--background-color);
-    font-size: 1.8rem;
-    font-weight: bold;
-} */
-
 nav ul {
     list-style: none;
     display: flex;
     gap: 25px;
+    flex-wrap: wrap;
 }
 
 nav ul li {
@@ -90,6 +84,19 @@ nav ul li a:hover, .active {
 
 .logo2 a:hover {
     color: #ff70a6;
+}
+
+@media screen and (max-width: 861px) {
+    nav {
+        flex-direction: column; /* Stack items on smaller screens */
+        padding: 10px 5%;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
 }
 
 /* APPLICATION FORM */
