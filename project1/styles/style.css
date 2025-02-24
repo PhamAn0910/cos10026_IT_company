@@ -801,13 +801,48 @@ footer {
     padding: 15px;
 }
 
+@media (max-width: 992px) {
+    .timetable {
+        padding: 15px;
+    }
+
+    .timetable h1 {
+        font-size: 1.3rem; 
+    }
+
+    .timetable table {
+        font-size: 0.9rem; 
+        display: block;
+        overflow-x: auto; /* Enable horizontal scrolling */
+        white-space: nowrap; /* Prevent text from wrapping */
+    }
+
+    .timetable th, .timetable td {
+        padding: 8px; 
+        font-size: 0.85rem; 
+    }
+
+    .timetable td:not(:empty) {
+        font-size: 0.8rem;
+        padding: 10px;
+    }
+}
+
 @media (max-width: 768px) {
+    .timetable {
+        padding: 10px;
+    }
+
+    .timetable h1 {
+        font-size: 1.2rem;
+    }
+
     .timetable table {
         font-size: 0.8rem;
     }
 
     .timetable th, .timetable td {
-        padding: 10px;
+        padding: 6px;
     }
 }
 
