@@ -713,6 +713,40 @@ footer {
     text-align: center; /* Centers smaller icons */
 }
 
+@media (max-width: 992px) {
+    .member-card {
+        max-width: 90%; /* Adjust to fit within screen */
+        padding: 20px; /* Reduce padding */
+    }
+
+    .member-card img {
+        width: 250px; /* Adjust image size */
+        height: 250px;
+    }
+
+    .member-card figcaption {
+        font-size: 1.6rem; /* Reduce font size slightly */
+    }
+
+    .personal-info p {
+        flex-direction: column; /* Stack icons and text */
+        text-align: center;
+    }
+
+    .personal-info i {
+        margin-bottom: 5px; /* Space between icon and text */
+    }
+}
+
+@media (max-width: 760px) {
+    .member-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
 /* Timetable */
 .timetable {
     background-color: #fff;
