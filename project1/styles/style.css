@@ -208,12 +208,11 @@ footer {
 
 /* Navbar */
 .navbar {
-    padding: 20px 2%;
+    padding: 20px 8%;
     position: absolute;
     top: 30px;
-    left: 40%;
-    transform: translateX(-40%);
-    width: 90%;
+    left: 0;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -249,6 +248,29 @@ footer {
 
 .nav-links li a:hover {
     color: #ff70a6; /* Pink */
+}
+
+@media screen and (max-width: 861px) {
+    .navbar {
+        flex-direction: column;
+        padding: 10px 5%;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .hero-text {
+        padding-top: 9rem;
+    }
+}
+
+@media screen and (max-width: 1150px) {
+    .hero-icon {
+        display: none !important; /* Ensures it's completely removed */
+    }
 }
 
 /* Hero Section */
