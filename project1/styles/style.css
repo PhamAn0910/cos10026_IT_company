@@ -505,6 +505,17 @@ footer {
     padding: 0 4px;
 }
 
+@media (max-width: 992px) {
+    .jd {
+        grid-template-columns: 1fr; /* Switch to a single column */
+        gap: 30px;
+    }
+
+    .jd .left-grid, .jd .right-grid {
+        grid-column: 1; /* Stack them in a single column */
+    }
+}
+
 /* General Purpose */
 .unhighlighted, .highlighted {
     font-weight: 500;
