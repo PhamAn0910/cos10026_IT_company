@@ -10,11 +10,15 @@ description: refer to index.html, jobs.html, apply.html, about.html, enhancement
 /* General Styles */
 :root {
     --dark-green: #004d35; /* Green */
-    --dark-brown: #3d1f15; /* Purple */
+    --dark-brown: #3d1f15; /* Brown */
     --pink: #ff70a6; /* Pink */
     --font-sans-serif: 'Public Sans', sans-serif;
     --font-serif: 'EB Garamond', serif;
     --text-color: #333333;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -723,6 +727,73 @@ footer {
 }
 
 .email a:hover {
+    background-color: var(--pink);
+    color: white;
+}
+
+/* ENHANCEMENT */
+.enhancements {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 35px;
+    padding: 40px;
+}
+
+.enhancements section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.enhancements section:hover {
+    transform: translateY(-5px);
+}
+
+.enhancements h1 {
+    grid-column: span 2;
+    text-align: center;
+    /* font-size: 2em; */
+    margin-bottom: 20px;
+}
+
+.enhancements h2 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    color: var(--dark-brown);
+    font-family: var(--font-serif);
+}
+
+.enhancements p {
+    font-size: 1.05em;
+    color: #444;
+    line-height: 1.6;
+}
+
+.enhancements a img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.enhancements a img:hover {
+    transform: scale(1.05);
+}
+
+.link {
+    margin-left: 5px;
+    text-decoration: none;
+    color: var(--dark-green);
+    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.link:hover {
     background-color: var(--pink);
     color: white;
 }
