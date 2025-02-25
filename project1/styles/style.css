@@ -508,6 +508,10 @@ footer {
     padding: 0 4px;
 }
 
+.right-grid ol, ul {
+    padding-left: 1.1em;
+}
+
 @media (max-width: 992px) {
     .jd {
         grid-template-columns: 1fr; /* Switch to a single column */
