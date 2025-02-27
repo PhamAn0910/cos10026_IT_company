@@ -39,7 +39,7 @@
   <main>
     <h1 class="page-title" id="form-title">Job Application</h1>
     <form action="https://mercury.swin.edu.au/it000000/formtest.php" method="post">
-      <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true" id="code3-for-enhancements">
+      <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend>Personal Details</legend>
         <label for="first-name">First Name:</label>
         <input type="text" id="first-name" name="first-name" 
@@ -59,7 +59,7 @@ Our company hires candidates aged 20-50 years (ie.01/01/1975 - 31/12/2004)."><br
       </fieldset>
 
       <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
-        <legend>Gender</legend>
+        <legend id="enhancement3-1">Gender</legend>
         <input type="radio" id="male" name="gender" value="male" required>
         <label for="male">Male</label>
         <input type="radio" id="female" name="gender" value="female">
@@ -96,7 +96,7 @@ Our company hires candidates aged 20-50 years (ie.01/01/1975 - 31/12/2004)."><br
         pattern="\d{4}" required
         title="The postcode can only have digits with a maximum of 4."><br>
 
-        <label for="email" id="code9-for-enhancements">Email:</label>
+        <label for="email">Email:</label>
         <input type="email" id="email" name="email" required><br>
 
         <label for="phone-num">Phone Number:</label>
@@ -105,11 +105,12 @@ Our company hires candidates aged 20-50 years (ie.01/01/1975 - 31/12/2004)."><br
       </fieldset>
 
       <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true" >
-        <legend>Job Application Details</legend>
+        <legend id="enhancement9">Job Application Details</legend>
         <label for="reference-num">Job Reference Number:</label>
         <input type="text" id="reference-num" name="reference-num" 
         list="jobRef" required pattern="SE123|CY987" 
-        title="Select a job reference number from the pre-defined list that matches the position you are applying for. 
+        title="Select the reference number from the below pre-defined list so 
+this number matches the position you are applying for. 
 Manually entered values must match exactly.">           
         <datalist id="jobRef">
           <option value="SE123">
@@ -119,7 +120,7 @@ Manually entered values must match exactly.">
 
       <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend>Job Application Skills</legend>
-        <label for="skill-list">Skill list:</label><br>
+        <label id="enhancement3-2" for="skill-list">Skill list:</label><br>
         
         <input type="checkbox" id="python" name="skill-list" value="Python" checked>
         <label for="python">Python</label><br>
