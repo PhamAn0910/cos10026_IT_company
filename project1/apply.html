@@ -48,12 +48,12 @@
 
         <label for="last-name">Last Name:</label>
         <input type="text" id="last-name" name="last-name" 
-        maxlength="20" pattern="[A-za-z]{0,15}" required
+        maxlength="20" pattern="[A-za-z]{0,20}" required
         title="Please enter your last name with a maximum of 20 alphabetic characters."><br>
 
         <label for="DOB">Date of Birth:</label>
         <input type="text" id="DOB" name="DOB" required placeholder="dd/mm/yyyy"
-        pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19[7-9][4-9]|200[0-4])$" 
+        pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19[7-9][5-9]|200[0-4])$" 
         title="Please enter the date in valid format: dd/mm/yyyy (eg.12/02/2002).
 Our company hires candidates aged 20-50 years (ie.01/01/1975 - 31/12/2004)."><br>
       </fieldset>
@@ -120,25 +120,23 @@ Manually entered values must match exactly.">
 
       <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend>Job Application Skills</legend>
-        <label id="enhancement3-2" for="skill-list">Skill list:</label><br>
+        <p id="enhancement3-2">Skill list:</p>
         
-        <input type="checkbox" id="python" name="skill-list" value="Python" checked>
+        <input type="checkbox" id="python" name="skill-1" value="Python" checked>
         <label for="python">Python</label><br>
 
-        <input type="checkbox" id="html-css" name="skill-list" value="HTML & CSS">
-        <label for="html-css">HTML & CSS</label><br>
+        <input type="checkbox" id="html-css" name="skill-2" value="HTML & CSS">
+        <label for="html-css">HTML &amp; CSS</label><br>
 
-        <input type="checkbox" id="javascript" name="skill-list" value="JavaScript">
+        <input type="checkbox" id="javascript" name="skill-3" value="JavaScript">
         <label for="javascript">JavaScript</label><br>
-
-
-        <input type="checkbox" id="java" name="skill-list" value="Java">
-        <label for="java">Java</label><br>
 
         <input type="checkbox" id="other-skills" name="skill-list" value="Other">
         <label for="other-skills">Other skills...</label><br>
 
-        <label for="other-skills-text">Other skills (if any):</label><br>
+        <p>
+          <label for="other-skills-text">Other skills (if any):</label>
+        </p>
         <textarea id="other-skills-text" name="other-skills-text" 
         placeholder="Write any other relevant skills that you might have..."></textarea><br>
       </fieldset>
