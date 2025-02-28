@@ -91,7 +91,7 @@ nav ul li a:hover, .active {
     color: #ff70a6;
 }
 
-@media screen and (max-width: 861px) {
+@media screen and (max-width: 883px) {
     nav {
         flex-direction: column; /* Stack items on smaller screens */
         padding: 10px 5%;
@@ -287,7 +287,7 @@ footer {
     color: #ff70a6; /* Pink */
 }
 
-@media screen and (max-width: 861px) {
+@media screen and (max-width: 883px) {
     .navbar {
         flex-direction: column;
         padding: 10px 5%;
