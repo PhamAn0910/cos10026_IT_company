@@ -526,7 +526,7 @@ footer {
     }
 
     .aside-context {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     .divider {
@@ -548,7 +548,7 @@ footer {
     }
 
     .page-title {
-        font: 150 35px 'EB Garamond', serif; /*font-weight, font-size, font-family*/
+        font: 150 33px 'EB Garamond', serif; /*font-weight, font-size, font-family*/
     }
 
     .job-description {
@@ -568,7 +568,7 @@ footer {
     }
 
     .white-area-jd {
-        padding: 1.2rem !important;
+        padding: 0.9rem !important;
     }
 }
 
