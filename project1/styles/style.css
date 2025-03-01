@@ -621,27 +621,47 @@ footer {
     font-size: 1.2rem;
 }
 
-.info-header {
+.general-info dl {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     margin-bottom: 10px;
-}
-
-.info-header h1 {
+    width: 100%;
+  }
+  
+/* Style the term Group Name, Our Tutor */
+.general-info dt {
+    font-weight: bold;
     font-size: 23px;
     margin: 20px 0 0 0;
-    white-space: nowrap; /* Prevent line breaks */
+    min-width: 20px; /* Prevents it from shrinking too much */
 }
 
-.info-header dt {
-    margin-left: 20px;
+.general-info dd {
     font-size: 2rem;
     font-weight: 500;
-    background-color: var(--pink);
     color: var(--dark-brown);
     font-family: var(--font-serif);
     padding: 0 10px 0 0;
-    display: inline-block;
+}
+
+/* Style Phan Thanh Tra & ID Number */
+dd span {
+    margin-left: 20px;
+    padding: 5px 10px;
+    background-color: var(--pink);
+    border-radius: 5px;
+}
+
+.group-id {
+    margin-left: 27px;
+}
+
+.heart {
+    color: var(--pink);
+    font-size: 30px;
+    transform: rotate(30deg);
+    margin-left: 10px;
 }
 
 #SonixWave-about {
@@ -672,17 +692,6 @@ footer {
     text-decoration-thickness: 5px; /* Adjust thickness */
     text-underline-offset: 4.5px; /* Control spacing between text and underline */
     text-decoration-style: dotted;
-}
-
-.heart {
-    color: var(--pink);
-    font-size: 30px;
-    transform: rotate(30deg);
-    margin-left: 10px;
-}
-
-.general-info dd {
-    margin: 10px 0 20px 0;
 }
 
 /* Member Info */
@@ -719,17 +728,24 @@ footer {
     object-fit: cover;
 }
 
-.member-card h2 {
+.member-card h3 {
     color: #333;
     font-size: 1.5rem;
     margin: 0;
 }
 
-.member-card p {
+.member-card dl {
     font-size: 1.15rem;
     color: #555;
-}
-
+    display: flex;
+    justify-content: center; /* Centers the text horizontally */
+    align-items: center; /* Ensures proper vertical alignment */
+    flex-wrap: wrap; /* Allows text to wrap if needed */
+    gap: 5px; /* Adds spacing between elements */
+    text-align: center; /* Ensures text stays centered */
+    width: 100%; /* Ensures full-width for centering */
+  }
+  
 .small-divider {
     height: 1px; /* Thickness of the divider */
     background-color: #333333a5; 
