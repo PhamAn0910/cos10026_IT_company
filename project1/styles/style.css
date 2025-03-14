@@ -33,16 +33,36 @@ body {
 }
 
 hr {
-    margin: 50px auto 20px;
+    margin: 50px auto 30px;
     border: none; /* Removes default border */
     height: 1px; /* Sets thickness */
     background-color: var(--text-color); /* Sets color */
-    width: 82%; /* Adjusts width */
+    width: 80%; /* Adjusts width */
+}
+
+#career-separator-line {
+    width: 95%;
+    margin: 50px 3% 30px 2%; /*top right bottom left */
+}
+
+@media (min-width: 580px) {
+    #career-separator-line {
+        margin: 50px 6% 30px 3%;
+        width: 91%;
+    }
+}
+
+@media (min-width: 896px) {
+    #career-separator-line {
+        width: 84%;
+        margin: 50px auto 30px;
+    }
 }
 
 @media (min-width: 920px) {
     hr {
-        width: 85%;
+        width: 85% !important;
+        margin: 50px auto 30px !important;
     }
 }
 
@@ -111,10 +131,10 @@ h1, aside h2 {
 }
 
 form {
-    max-width: 93%;
+    max-width: 80%;
     margin: 2em auto;
     background: #b0c39d22;
-    padding: 20px 15%;
+    padding: 20px 11%;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -236,7 +256,10 @@ footer {
 @media screen and (max-width: 580px) {
     h1, aside h2 {
         font-size: 2.1rem !important;
-        max-width: 200px !important;
+    }
+
+    #enhancement-h1 {
+        max-width: 200px;
     }
 
     .jobs-context {
@@ -678,7 +701,7 @@ dd span {
 }
 
 .member-card img {
-    width: 200px; /* Adjust size */
+    width: 80%; /* Adjust size */
     border-radius: 50%;
     object-fit: cover;
 }
@@ -913,7 +936,7 @@ dd span {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
     gap: 35px;
-    padding: 40px calc(2rem + (3 *((100vw - 60px) /60)));
+    padding: 40px calc(2rem + (4 *((100vw - 60px) /60)));
     justify-content: center;
     justify-items: center;
 }
