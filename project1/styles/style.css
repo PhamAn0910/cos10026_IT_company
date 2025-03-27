@@ -712,7 +712,7 @@ dd span {
     margin: 0;
 }
 
-#member-title {
+.member-title {
     color: #333;
     font-size: 1.5rem;
     margin: 0;
