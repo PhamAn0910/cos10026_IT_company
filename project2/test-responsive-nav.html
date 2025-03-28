@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Responsive Navigation</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/responsive-nav.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #333;
+        }
+        pre {
+            background-color: #eee;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <nav id="enhancement2">
+        <span class="logo"><a href="https://youtu.be/KAIC4oCGNNc" target="_blank">SonixWave</a></span>
+        <button class="menu-toggle" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+        <ul class="nav-links">
+            <li><a href="index.php">Home</a></li>
+            <li><a href="jobs.php">Career</a></li>
+            <li><a href="apply.php">Apply Now</a></li>
+            <li><a href="about.php">About Us</a></li>
+            <li><a href="enhancements.php">Enhancements</a></li>
+            <li><a href="manage.php">Manage</a></li>
+            <li><a href="mailto:105028463@student.swin.edu.au,105192148@student.swin.edu.au">Contact</a></li>
+        </ul>
+    </nav>
+    
+    <div class="test-container">
+        <h1>Responsive Navigation Test</h1>
+        <p>This page tests the responsive navigation implementation. Resize your browser window to see the changes:</p>
+        <ul>
+            <li>At larger screen sizes: Navigation displays horizontally</li>
+            <li>At smaller screen sizes (less than 920px): 
+                <ul>
+                    <li>A hamburger menu (☰) appears</li>
+                    <li>The navigation links are hidden by default</li>
+                    <li>Clicking the hamburger toggles the navigation visibility</li>
+                </ul>
+            </li>
+        </ul>
+        
+        <h2>Implementation Details:</h2>
+        <p>The responsive navigation includes:</p>
+        <ol>
+            <li>A hamburger button for toggling the menu</li>
+            <li>CSS for responsive styling</li>
+            <li>JavaScript for handling the toggle functionality</li>
+            <li>Keyboard accessibility (press ESC to close)</li>
+            <li>Overlay background when menu is open</li>
+        </ol>
+    </div>
+
+    <script src="scripts/nav-toggle.js"></script>
+</body>
+</html> 
