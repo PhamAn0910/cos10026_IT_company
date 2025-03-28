@@ -315,9 +315,6 @@ function get_sort_clause() {
         </div>
     </main>
 
-    <footer>
-        <p>&copy; 2025 SonixWave. All rights reserved.</p>
-        <p class="footer-logo">SonixWave</p>
-    </footer>
+    <?php include 'footer.inc'; ?>
 </body>
 </html> 
