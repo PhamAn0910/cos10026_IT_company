@@ -249,13 +249,13 @@ function get_sort_clause() {
                 <div class="sort-options">
                     <label for="sort_field">Sort by:</label>
                     <select id="sort_field" name="sort_field">
-                        <option value="EOInumber">EOI Number</option>
-                        <option value="job_reference">Job Reference</option>
-                        <option value="first_name">First Name</option>
-                        <option value="last_name">Last Name</option>
-                        <option value="date_of_birth">Date of Birth</option>
-                        <option value="status">Status</option>
-                        <option value="application_date">Application Date</option>
+                        <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
+                        <option value="job_reference" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'job_reference') ? 'selected' : ''; ?>>Job Reference</option>
+                        <option value="first_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'first_name') ? 'selected' : ''; ?>>First Name</option>
+                        <option value="last_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'last_name') ? 'selected' : ''; ?>>Last Name</option>
+                        <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
+                        <option value="status" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'status') ? 'selected' : ''; ?>>Status</option>
+                        <option value="application_date" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'application_date') ? 'selected' : ''; ?>>Application Date</option>
                     </select>
                     <div class="radio-group">
                         <label class="radio-label">
@@ -283,12 +283,12 @@ function get_sort_clause() {
                 <div class="sort-options">
                     <label for="sort_field_job">Sort by:</label>
                     <select id="sort_field_job" name="sort_field">
-                        <option value="EOInumber">EOI Number</option>
-                        <option value="first_name">First Name</option>
-                        <option value="last_name">Last Name</option>
-                        <option value="date_of_birth">Date of Birth</option>
-                        <option value="status">Status</option>
-                        <option value="application_date">Application Date</option>
+                        <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
+                        <option value="first_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'first_name') ? 'selected' : ''; ?>>First Name</option>
+                        <option value="last_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'last_name') ? 'selected' : ''; ?>>Last Name</option>
+                        <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
+                        <option value="status" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'status') ? 'selected' : ''; ?>>Status</option>
+                        <option value="application_date" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'application_date') ? 'selected' : ''; ?>>Application Date</option>
                     </select>
                     <div class="radio-group">
                         <label class="radio-label">
@@ -320,11 +320,11 @@ function get_sort_clause() {
                 <div class="sort-options">
                     <label for="sort_field_name">Sort by:</label>
                     <select id="sort_field_name" name="sort_field">
-                        <option value="EOInumber">EOI Number</option>
-                        <option value="job_reference">Job Reference</option>
-                        <option value="date_of_birth">Date of Birth</option>
-                        <option value="status">Status</option>
-                        <option value="application_date">Application Date</option>
+                        <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
+                        <option value="job_reference" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'job_reference') ? 'selected' : ''; ?>>Job Reference</option>
+                        <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
+                        <option value="status" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'status') ? 'selected' : ''; ?>>Status</option>
+                        <option value="application_date" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'application_date') ? 'selected' : ''; ?>>Application Date</option>
                     </select>
                     <div class="radio-group">
                         <label class="radio-label">
