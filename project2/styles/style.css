@@ -487,7 +487,7 @@ figure i {
     display: grid;
     grid-template-columns: 3fr 1fr; 
     gap: 20px;
-    padding: 20px 72px 20px 68px; /*top right bottom left */
+    padding: 20px 86px 20px 93px; /*top right bottom left */
 }
 
 .jobs-context main {
@@ -499,7 +499,7 @@ figure i {
 .jd {
     display: grid;
     grid-template-columns: 2fr 3fr;
-    gap: 46px;
+    gap: 20px;
     margin: 30px 0;
     padding: 20px 20px 20px 0; /*top right bottom left */
 }
