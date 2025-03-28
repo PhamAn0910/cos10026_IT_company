@@ -35,6 +35,46 @@ function display_results($result) {
     }
 }
 
+// Get the sorting field and order
+function get_sort_clause() {
+    $valid_fields = [
+        'EOInumber', 'job_reference', 'first_name', 'last_name', 
+        'date_of_birth', 'gender', 'email', 'status', 'application_date'
+    ];
+    
+    $sort_field = isset($_POST['sort_field']) ? sanitize_input($_POST['sort_field']) : 'EOInumber';
+    $sort_order = isset($_POST['sort_order']) ? sanitize_input($_POST['sort_order']) : 'DESC';
+    
+    // Validate the sort field
+    if (!in_array($sort_field, $valid_fields)) {
+        $sort_field = 'EOInumber';
+    }
+    
+    // Validate the sort order
+    if ($sort_order != 'ASC' && $sort_order != 'DESC') {
+        $sort_order = 'DESC';
+    }
+    
+    // Special handling for status field to sort in logical order (New, Current, Final)
+    if ($sort_field == 'status') {
+        if ($sort_order == 'ASC') {
+            return " ORDER BY CASE status 
+                      WHEN 'New' THEN 1 
+                      WHEN 'Current' THEN 2 
+                      WHEN 'Final' THEN 3 
+                      ELSE 4 END";
+        } else { // DESC
+            return " ORDER BY CASE status 
+                      WHEN 'Final' THEN 1 
+                      WHEN 'Current' THEN 2 
+                      WHEN 'New' THEN 3 
+                      ELSE 4 END";
+        }
+    }
+    
+    return " ORDER BY $sort_field $sort_order";
+}
+
 // The form processing code has been moved to the results-container section
 ?>
 
@@ -115,6 +155,22 @@ function display_results($result) {
             margin-bottom: 20px;
             border-radius: 4px;
         }
+        .sort-options {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+        .sort-options label {
+            margin-right: 10px;
+        }
+        .sort-options .radio-group {
+            margin-top: 10px;
+        }
+        .radio-label {
+            display: inline-block;
+            margin-right: 15px;
+        }
     </style>
 </head>
 <body>
@@ -144,16 +200,19 @@ function display_results($result) {
                 if (!$conn) {
                     echo "<div class='error-message'>Database connection failure</div>";
                 } else {
+                    // Get sort clause for queries
+                    $sort_clause = get_sort_clause();
+
                     // Handle different operations based on form submission
                     if (isset($_POST['list_all'])) {
-                        $query = "SELECT * FROM eoi ORDER BY EOInumber DESC";
+                        $query = "SELECT * FROM eoi" . $sort_clause;
                         $result = mysqli_query($conn, $query);
                         display_results($result);
                     }
                     
                     elseif (isset($_POST['list_by_job'])) {
                         $jobRef = sanitize_input($_POST['job_ref']);
-                        $query = "SELECT * FROM eoi WHERE job_reference = '$jobRef' ORDER BY EOInumber DESC";
+                        $query = "SELECT * FROM eoi WHERE job_reference = '$jobRef'" . $sort_clause;
                         $result = mysqli_query($conn, $query);
                         display_results($result);
                     }
@@ -168,7 +227,7 @@ function display_results($result) {
                         if (!empty($lastName)) {
                             $query .= " AND last_name LIKE '%$lastName%'";
                         }
-                        $query .= " ORDER BY EOInumber DESC";
+                        $query .= $sort_clause;
                         $result = mysqli_query($conn, $query);
                         display_results($result);
                     }
@@ -186,11 +245,22 @@ function display_results($result) {
                     elseif (isset($_POST['update_status'])) {
                         $eoiNumber = sanitize_input($_POST['eoi_number']);
                         $newStatus = sanitize_input($_POST['new_status']);
-                        $query = "UPDATE eoi SET status = '$newStatus' WHERE EOInumber = '$eoiNumber'";
-                        if (mysqli_query($conn, $query)) {
-                            echo "<div class='success-message'>Successfully updated status for EOI number: $eoiNumber</div>";
+                        
+                        // First, check if the EOI number exists
+                        $checkQuery = "SELECT EOInumber FROM eoi WHERE EOInumber = '$eoiNumber'";
+                        $checkResult = mysqli_query($conn, $checkQuery);
+                        
+                        if (mysqli_num_rows($checkResult) > 0) {
+                            // EOI exists, proceed with update
+                            $query = "UPDATE eoi SET status = '$newStatus' WHERE EOInumber = '$eoiNumber'";
+                            if (mysqli_query($conn, $query)) {
+                                echo "<div class='success-message'>Successfully updated status for EOI number: $eoiNumber</div>";
+                            } else {
+                                echo "<div class='error-message'>Error updating status: " . mysqli_error($conn) . "</div>";
+                            }
                         } else {
-                            echo "<div class='error-message'>Error updating status: " . mysqli_error($conn) . "</div>";
+                            // EOI does not exist
+                            echo "<div class='error-message'>Error: EOI number $eoiNumber does not exist in the database</div>";
                         }
                     }
                     
@@ -204,6 +274,28 @@ function display_results($result) {
         <div class="management-section">
             <h2>List All EOIs</h2>
             <form method="post">
+                <div class="sort-options">
+                    <label for="sort_field">Sort by:</label>
+                    <select id="sort_field" name="sort_field">
+                        <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
+                        <option value="job_reference" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'job_reference') ? 'selected' : ''; ?>>Job Reference</option>
+                        <option value="first_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'first_name') ? 'selected' : ''; ?>>First Name</option>
+                        <option value="last_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'last_name') ? 'selected' : ''; ?>>Last Name</option>
+                        <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
+                        <option value="status" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'status') ? 'selected' : ''; ?>>Status</option>
+                        <option value="application_date" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'application_date') ? 'selected' : ''; ?>>Application Date</option>
+                    </select>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="sort_order" value="ASC" <?php echo (isset($_POST['sort_order']) && $_POST['sort_order'] == 'ASC') ? 'checked' : ''; ?>> 
+                            Ascending
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="sort_order" value="DESC" <?php echo (!isset($_POST['sort_order']) || $_POST['sort_order'] == 'DESC') ? 'checked' : ''; ?>> 
+                            Descending
+                        </label>
+                    </div>
+                </div>
                 <input type="submit" name="list_all" value="List All EOIs" class="submit-btn">
             </form>
         </div>
@@ -215,6 +307,27 @@ function display_results($result) {
                 <div class="form-group">
                     <label for="job_ref">Job Reference Number:</label>
                     <input type="text" id="job_ref" name="job_ref" required>
+                </div>
+                <div class="sort-options">
+                    <label for="sort_field_job">Sort by:</label>
+                    <select id="sort_field_job" name="sort_field">
+                        <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
+                        <option value="first_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'first_name') ? 'selected' : ''; ?>>First Name</option>
+                        <option value="last_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'last_name') ? 'selected' : ''; ?>>Last Name</option>
+                        <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
+                        <option value="status" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'status') ? 'selected' : ''; ?>>Status</option>
+                        <option value="application_date" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'application_date') ? 'selected' : ''; ?>>Application Date</option>
+                    </select>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="sort_order" value="ASC"> 
+                            Ascending
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="sort_order" value="DESC" checked> 
+                            Descending
+                        </label>
+                    </div>
                 </div>
                 <input type="submit" name="list_by_job" value="Search" class="submit-btn">
             </form>
@@ -231,6 +344,26 @@ function display_results($result) {
                 <div class="form-group">
                     <label for="last_name">Last Name:</label>
                     <input type="text" id="last_name" name="last_name">
+                </div>
+                <div class="sort-options">
+                    <label for="sort_field_name">Sort by:</label>
+                    <select id="sort_field_name" name="sort_field">
+                        <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
+                        <option value="job_reference" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'job_reference') ? 'selected' : ''; ?>>Job Reference</option>
+                        <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
+                        <option value="status" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'status') ? 'selected' : ''; ?>>Status</option>
+                        <option value="application_date" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'application_date') ? 'selected' : ''; ?>>Application Date</option>
+                    </select>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="sort_order" value="ASC"> 
+                            Ascending
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="sort_order" value="DESC" checked> 
+                            Descending
+                        </label>
+                    </div>
                 </div>
                 <input type="submit" name="list_by_name" value="Search" class="submit-btn">
             </form>
@@ -274,4 +407,4 @@ function display_results($result) {
         <p class="footer-logo">SonixWave</p>
     </footer>
 </body>
-</html>
+</html> 
