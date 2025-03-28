@@ -83,15 +83,53 @@ function get_sort_clause() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>SonixWave | Manage EOIs</title>
+
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <style>
         .management-section {
-            margin: 20px;
+            max-width: 80%;
+            margin: 20px auto;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+        @media (min-width: 920px) {
+            .management-section {
+                max-width: 85%; /* Match the hr width at this breakpoint */
+            }
+        }
+        /* Two-column grid layout for forms */
+        .forms-grid {
+            max-width: 80%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 810px) {
+            .forms-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (min-width: 920px) {
+            .forms-grid {
+                max-width: 85%; /* Match the hr width at this breakpoint */
+            }
+        }
+        
+        .forms-grid .management-section {
+            max-width: 100%;
+            margin: 0;
+        }
+        
         .results-table {
             width: 100%;
             border-collapse: collapse;
@@ -109,6 +147,7 @@ function get_sort_clause() {
             background-color: #f9f9f9;
         }
         .form-group {
+            width: 100%;
             margin-bottom: 15px;
         }
         .form-group label {
@@ -120,17 +159,6 @@ function get_sort_clause() {
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-        }
-        .submit-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .submit-btn:hover {
-            background-color: #45a049;
         }
         /* New styles for messages and results */
         #results-container {
@@ -156,6 +184,7 @@ function get_sort_clause() {
             border-radius: 4px;
         }
         .sort-options {
+            width: 100%;
             background-color: #f9f9f9;
             padding: 15px;
             border-radius: 4px;
@@ -178,7 +207,7 @@ function get_sort_clause() {
         <?php include 'header.inc'; ?>
         <hr>
 
-        <h1>Manage Expressions of Interest</h1>
+        <h1 style="margin-top:4rem;">Manage Expressions of Interest</h1>
 
         <!-- Results Section -->
         <?php
@@ -259,7 +288,7 @@ function get_sort_clause() {
         }
         ?>
 
-        <!-- List All EOIs -->
+        <!-- List All EOIs - Full Width -->
         <div class="management-section">
             <h2>List All EOIs</h2>
             <form method="post">
@@ -285,109 +314,112 @@ function get_sort_clause() {
                         </label>
                     </div>
                 </div>
-                <input type="submit" name="list_all" value="List All EOIs" class="submit-btn">
+                <input type="submit" name="list_all" value="List All EOIs">
             </form>
         </div>
 
-        <!-- List EOIs by Job Reference -->
-        <div class="management-section">
-            <h2>List EOIs by Job Reference</h2>
-            <form method="post">
-                <div class="form-group">
-                    <label for="job_ref">Job Reference Number:</label>
-                    <input type="text" id="job_ref" name="job_ref" required>
-                </div>
-                <div class="sort-options">
-                    <label for="sort_field_job">Sort by:</label>
-                    <select id="sort_field_job" name="sort_field">
-                        <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
-                        <option value="first_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'first_name') ? 'selected' : ''; ?>>First Name</option>
-                        <option value="last_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'last_name') ? 'selected' : ''; ?>>Last Name</option>
-                        <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
-                        <option value="status" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'status') ? 'selected' : ''; ?>>Status</option>
-                        <option value="application_date" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'application_date') ? 'selected' : ''; ?>>Application Date</option>
-                    </select>
-                    <div class="radio-group">
-                        <label class="radio-label">
-                            <input type="radio" name="sort_order" value="ASC"> 
-                            Ascending
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="sort_order" value="DESC" checked> 
-                            Descending
-                        </label>
+        <!-- Two-column grid for the other forms -->
+        <div class="forms-grid">
+            <!-- List EOIs by Job Reference -->
+            <div class="management-section">
+                <h2>List EOIs by Job Reference</h2>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="job_ref">Job Reference Number:</label>
+                        <input type="text" id="job_ref" name="job_ref" required>
                     </div>
-                </div>
-                <input type="submit" name="list_by_job" value="Search" class="submit-btn">
-            </form>
-        </div>
-
-        <!-- List EOIs by Name -->
-        <div class="management-section">
-            <h2>List EOIs by Name</h2>
-            <form method="post">
-                <div class="form-group">
-                    <label for="first_name">First Name:</label>
-                    <input type="text" id="first_name" name="first_name">
-                </div>
-                <div class="form-group">
-                    <label for="last_name">Last Name:</label>
-                    <input type="text" id="last_name" name="last_name">
-                </div>
-                <div class="sort-options">
-                    <label for="sort_field_name">Sort by:</label>
-                    <select id="sort_field_name" name="sort_field">
-                        <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
-                        <option value="job_reference" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'job_reference') ? 'selected' : ''; ?>>Job Reference</option>
-                        <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
-                        <option value="status" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'status') ? 'selected' : ''; ?>>Status</option>
-                        <option value="application_date" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'application_date') ? 'selected' : ''; ?>>Application Date</option>
-                    </select>
-                    <div class="radio-group">
-                        <label class="radio-label">
-                            <input type="radio" name="sort_order" value="ASC"> 
-                            Ascending
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="sort_order" value="DESC" checked> 
-                            Descending
-                        </label>
+                    <div class="sort-options">
+                        <label for="sort_field_job">Sort by:</label>
+                        <select id="sort_field_job" name="sort_field">
+                            <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
+                            <option value="first_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'first_name') ? 'selected' : ''; ?>>First Name</option>
+                            <option value="last_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'last_name') ? 'selected' : ''; ?>>Last Name</option>
+                            <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
+                            <option value="status" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'status') ? 'selected' : ''; ?>>Status</option>
+                            <option value="application_date" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'application_date') ? 'selected' : ''; ?>>Application Date</option>
+                        </select>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="sort_order" value="ASC"> 
+                                Ascending
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="sort_order" value="DESC" checked> 
+                                Descending
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <input type="submit" name="list_by_name" value="Search" class="submit-btn">
-            </form>
-        </div>
+                    <input type="submit" name="list_by_job" value="Search">
+                </form>
+            </div>
 
-        <!-- Delete EOIs by Job Reference -->
-        <div class="management-section">
-            <h2>Delete EOIs by Job Reference</h2>
-            <form method="post" onsubmit="return confirm('Are you sure you want to delete all EOIs for this job reference?');">
-                <div class="form-group">
-                    <label for="delete_job_ref">Job Reference Number:</label>
-                    <input type="text" id="delete_job_ref" name="delete_job_ref" required>
-                </div>
-                <input type="submit" name="delete_job" value="Delete" class="submit-btn">
-            </form>
-        </div>
+            <!-- List EOIs by Name -->
+            <div class="management-section">
+                <h2>List EOIs by Name</h2>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" id="first_name" name="first_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="last_name" name="last_name">
+                    </div>
+                    <div class="sort-options">
+                        <label for="sort_field_name">Sort by:</label>
+                        <select id="sort_field_name" name="sort_field">
+                            <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
+                            <option value="job_reference" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'job_reference') ? 'selected' : ''; ?>>Job Reference</option>
+                            <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
+                            <option value="status" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'status') ? 'selected' : ''; ?>>Status</option>
+                            <option value="application_date" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'application_date') ? 'selected' : ''; ?>>Application Date</option>
+                        </select>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="sort_order" value="ASC"> 
+                                Ascending
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="sort_order" value="DESC" checked> 
+                                Descending
+                            </label>
+                        </div>
+                    </div>
+                    <input type="submit" name="list_by_name" value="Search">
+                </form>
+            </div>
 
-        <!-- Update EOI Status -->
-        <div class="management-section">
-            <h2>Update EOI Status</h2>
-            <form method="post">
-                <div class="form-group">
-                    <label for="eoi_number">EOI Number:</label>
-                    <input type="number" id="eoi_number" name="eoi_number" required>
-                </div>
-                <div class="form-group">
-                    <label for="new_status">New Status:</label>
-                    <select id="new_status" name="new_status" required>
-                        <option value="New">New</option>
-                        <option value="Current">Current</option>
-                        <option value="Final">Final</option>
-                    </select>
-                </div>
-                <input type="submit" name="update_status" value="Update Status" class="submit-btn">
-            </form>
+            <!-- Delete EOIs by Job Reference -->
+            <div class="management-section">
+                <h2>Delete EOIs by Job Reference</h2>
+                <form method="post" onsubmit="return confirm('Are you sure you want to delete all EOIs for this job reference?');">
+                    <div class="form-group">
+                        <label for="delete_job_ref">Job Reference Number:</label>
+                        <input type="text" id="delete_job_ref" name="delete_job_ref" required>
+                    </div>
+                    <input type="submit" name="delete_job" value="Delete">
+                </form>
+            </div>
+
+            <!-- Update EOI Status -->
+            <div class="management-section">
+                <h2>Update EOI Status</h2>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="eoi_number">EOI Number:</label>
+                        <input type="number" id="eoi_number" name="eoi_number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_status">New Status:</label>
+                        <select id="new_status" name="new_status" required>
+                            <option value="New">New</option>
+                            <option value="Current">Current</option>
+                            <option value="Final">Final</option>
+                        </select>
+                    </div>
+                    <input type="submit" name="update_status" value="Update Status">
+                </form>
+            </div>
         </div>
     </main>
 

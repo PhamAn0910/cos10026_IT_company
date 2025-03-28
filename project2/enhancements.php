@@ -24,7 +24,7 @@
   <?php include 'header.inc'; ?>
 
   <hr>
-    <h1 id="enhancement-h1">Enhancements Implemented</h1>
+    <h1 id="enhancement-h1" style="margin-top:4rem;">Enhancements Implemented</h1>
     
     <div class="enhancements">
     <section>
