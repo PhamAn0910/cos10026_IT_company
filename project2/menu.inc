@@ -11,6 +11,3 @@
             <li><a href="mailto:105028463@student.swin.edu.au,105192148@student.swin.edu.au">Contact</a></li>
     </ul>
 </nav>
-<!-- Include responsive navigation styles and scripts -->
-<link rel="stylesheet" href="styles/responsive-nav.css">
-<script src="scripts/nav-toggle.js"></script>
