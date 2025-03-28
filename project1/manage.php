@@ -245,11 +245,22 @@ function get_sort_clause() {
                     elseif (isset($_POST['update_status'])) {
                         $eoiNumber = sanitize_input($_POST['eoi_number']);
                         $newStatus = sanitize_input($_POST['new_status']);
-                        $query = "UPDATE eoi SET status = '$newStatus' WHERE EOInumber = '$eoiNumber'";
-                        if (mysqli_query($conn, $query)) {
-                            echo "<div class='success-message'>Successfully updated status for EOI number: $eoiNumber</div>";
+                        
+                        // First, check if the EOI number exists
+                        $checkQuery = "SELECT EOInumber FROM eoi WHERE EOInumber = '$eoiNumber'";
+                        $checkResult = mysqli_query($conn, $checkQuery);
+                        
+                        if (mysqli_num_rows($checkResult) > 0) {
+                            // EOI exists, proceed with update
+                            $query = "UPDATE eoi SET status = '$newStatus' WHERE EOInumber = '$eoiNumber'";
+                            if (mysqli_query($conn, $query)) {
+                                echo "<div class='success-message'>Successfully updated status for EOI number: $eoiNumber</div>";
+                            } else {
+                                echo "<div class='error-message'>Error updating status: " . mysqli_error($conn) . "</div>";
+                            }
                         } else {
-                            echo "<div class='error-message'>Error updating status: " . mysqli_error($conn) . "</div>";
+                            // EOI does not exist
+                            echo "<div class='error-message'>Error: EOI number $eoiNumber does not exist in the database</div>";
                         }
                     }
                     
