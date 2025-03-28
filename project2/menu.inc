@@ -1,5 +1,6 @@
 <nav id="enhancement2">
     <span class="logo"><a href="https://youtu.be/KAIC4oCGNNc" target="_blank">SonixWave</a></span>
+    <button class="menu-toggle" aria-expanded="false" aria-label="Toggle navigation">☰</button>
     <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="jobs.php">Career</a></li>
