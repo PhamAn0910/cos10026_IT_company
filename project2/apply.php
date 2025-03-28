@@ -25,7 +25,7 @@
   <!-- Apply Form -->
   <main>
     <h1 id="form-title">Job Application</h1>
-    <form action="https://mercury.swin.edu.au/it000000/formtest.php" method="post">
+    <form action="process_eoi.php" method="post">
       <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend>Personal Details</legend>
         <label for="first-name">First Name:</label>
