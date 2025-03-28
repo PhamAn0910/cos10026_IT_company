@@ -200,6 +200,28 @@ function get_sort_clause() {
             display: inline-block;
             margin-right: 15px;
         }
+        .form-manage {
+        max-width: 100%;
+        margin: 2em auto;
+        background:rgba(244, 243, 243, 0.76);
+        padding: 20px 11%;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        }
+        .select-manage {
+        background-color: var(--dark-green); /* Background color */
+        color: white; /* Text color */
+        border: 2px solid var(--dark-green); /* Border color */
+        }
+        .h2-manage{
+        color: var(--dark-brown);
+        font-size: 1.8rem;
+        font-family: var(--font-serif);
+        font-weight: 100;
+        text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -290,11 +312,11 @@ function get_sort_clause() {
 
         <!-- List All EOIs - Full Width -->
         <div class="management-section">
-            <h2>List All EOIs</h2>
-            <form method="post">
+            <h2 class="h2-manage">List All EOIs</h2>
+            <form method="post" class="form-manage">
                 <div class="sort-options">
                     <label for="sort_field">Sort by:</label>
-                    <select id="sort_field" name="sort_field">
+                    <select id="sort_field" name="sort_field" class="select-manage">
                         <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
                         <option value="job_reference" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'job_reference') ? 'selected' : ''; ?>>Job Reference</option>
                         <option value="first_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'first_name') ? 'selected' : ''; ?>>First Name</option>
@@ -322,15 +344,15 @@ function get_sort_clause() {
         <div class="forms-grid">
             <!-- List EOIs by Job Reference -->
             <div class="management-section">
-                <h2>List EOIs by Job Reference</h2>
-                <form method="post">
+                <h2 class="h2-manage">List EOIs by Job Reference</h2>
+                <form method="post" class="form-manage">
                     <div class="form-group">
                         <label for="job_ref">Job Reference Number:</label>
                         <input type="text" id="job_ref" name="job_ref" required>
                     </div>
                     <div class="sort-options">
                         <label for="sort_field_job">Sort by:</label>
-                        <select id="sort_field_job" name="sort_field">
+                        <select id="sort_field_job" name="sort_field" class="select-manage">
                             <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
                             <option value="first_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'first_name') ? 'selected' : ''; ?>>First Name</option>
                             <option value="last_name" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'last_name') ? 'selected' : ''; ?>>Last Name</option>
@@ -355,8 +377,8 @@ function get_sort_clause() {
 
             <!-- List EOIs by Name -->
             <div class="management-section">
-                <h2>List EOIs by Name</h2>
-                <form method="post">
+                <h2 class="h2-manage">List EOIs by Name</h2>
+                <form method="post" class="form-manage">
                     <div class="form-group">
                         <label for="first_name">First Name:</label>
                         <input type="text" id="first_name" name="first_name">
@@ -367,7 +389,7 @@ function get_sort_clause() {
                     </div>
                     <div class="sort-options">
                         <label for="sort_field_name">Sort by:</label>
-                        <select id="sort_field_name" name="sort_field">
+                        <select id="sort_field_name" name="sort_field" class="select-manage">
                             <option value="EOInumber" <?php echo (!isset($_POST['sort_field']) || $_POST['sort_field'] == 'EOInumber') ? 'selected' : ''; ?>>EOI Number</option>
                             <option value="job_reference" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'job_reference') ? 'selected' : ''; ?>>Job Reference</option>
                             <option value="date_of_birth" <?php echo (isset($_POST['sort_field']) && $_POST['sort_field'] == 'date_of_birth') ? 'selected' : ''; ?>>Date of Birth</option>
@@ -391,8 +413,8 @@ function get_sort_clause() {
 
             <!-- Delete EOIs by Job Reference -->
             <div class="management-section">
-                <h2>Delete EOIs by Job Reference</h2>
-                <form method="post" onsubmit="return confirm('Are you sure you want to delete all EOIs for this job reference?');">
+                <h2 class="h2-manage">Delete EOIs by Job Reference</h2>
+                <form method="post" class="form-manage" onsubmit="return confirm('Are you sure you want to delete all EOIs for this job reference?');">
                     <div class="form-group">
                         <label for="delete_job_ref">Job Reference Number:</label>
                         <input type="text" id="delete_job_ref" name="delete_job_ref" required>
@@ -403,15 +425,15 @@ function get_sort_clause() {
 
             <!-- Update EOI Status -->
             <div class="management-section">
-                <h2>Update EOI Status</h2>
-                <form method="post">
+                <h2 class="h2-manage">Update EOI Status</h2>
+                <form method="post" class="form-manage">
                     <div class="form-group">
                         <label for="eoi_number">EOI Number:</label>
                         <input type="number" id="eoi_number" name="eoi_number" required>
                     </div>
                     <div class="form-group">
                         <label for="new_status">New Status:</label>
-                        <select id="new_status" name="new_status" required>
+                        <select id="new_status" name="new_status" required class="select-manage">
                             <option value="New">New</option>
                             <option value="Current">Current</option>
                             <option value="Final">Final</option>
