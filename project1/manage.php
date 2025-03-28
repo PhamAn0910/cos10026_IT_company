@@ -55,6 +55,23 @@ function get_sort_clause() {
         $sort_order = 'DESC';
     }
     
+    // Special handling for status field to sort in logical order (New, Current, Final)
+    if ($sort_field == 'status') {
+        if ($sort_order == 'ASC') {
+            return " ORDER BY CASE status 
+                      WHEN 'New' THEN 1 
+                      WHEN 'Current' THEN 2 
+                      WHEN 'Final' THEN 3 
+                      ELSE 4 END";
+        } else { // DESC
+            return " ORDER BY CASE status 
+                      WHEN 'Final' THEN 1 
+                      WHEN 'Current' THEN 2 
+                      WHEN 'New' THEN 3 
+                      ELSE 4 END";
+        }
+    }
+    
     return " ORDER BY $sort_field $sort_order";
 }
 
