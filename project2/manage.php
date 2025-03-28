@@ -174,101 +174,90 @@ function get_sort_clause() {
     </style>
 </head>
 <body>
-    <header>    
-        <nav>
-            <span class="logo"><a href="https://youtu.be/KAIC4oCGNNc" target="_blank">SonixWave</a></span>       
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="jobs.html">Career</a></li>
-                <li><a href="apply.html">Apply Now</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="enhancements.html">Enhancements</a></li>
-                <li><a href="mailto:105028463@student.swin.edu.au,105192148@student.swin.edu.au">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
     <main>
+        <?php include 'header.inc'; ?>
+        <hr>
+
         <h1>Manage Expressions of Interest</h1>
 
         <!-- Results Section -->
-        <div id="results-container" class="management-section">
-            <?php
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
-                
-                if (!$conn) {
-                    echo "<div class='error-message'>Database connection failure</div>";
-                } else {
-                    // Get sort clause for queries
-                    $sort_clause = get_sort_clause();
+        <?php
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            echo '<div id="results-container" class="management-section">';
+            $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
+            
+            if (!$conn) {
+                echo "<div class='error-message'>Database connection failure</div>";
+            } else {
+                // Get sort clause for queries
+                $sort_clause = get_sort_clause();
 
-                    // Handle different operations based on form submission
-                    if (isset($_POST['list_all'])) {
-                        $query = "SELECT * FROM eoi" . $sort_clause;
-                        $result = mysqli_query($conn, $query);
-                        display_results($result);
-                    }
-                    
-                    elseif (isset($_POST['list_by_job'])) {
-                        $jobRef = sanitize_input($_POST['job_ref']);
-                        $query = "SELECT * FROM eoi WHERE job_reference = '$jobRef'" . $sort_clause;
-                        $result = mysqli_query($conn, $query);
-                        display_results($result);
-                    }
-                    
-                    elseif (isset($_POST['list_by_name'])) {
-                        $firstName = sanitize_input($_POST['first_name']);
-                        $lastName = sanitize_input($_POST['last_name']);
-                        $query = "SELECT * FROM eoi WHERE 1=1";
-                        if (!empty($firstName)) {
-                            $query .= " AND first_name LIKE '%$firstName%'";
-                        }
-                        if (!empty($lastName)) {
-                            $query .= " AND last_name LIKE '%$lastName%'";
-                        }
-                        $query .= $sort_clause;
-                        $result = mysqli_query($conn, $query);
-                        display_results($result);
-                    }
-                    
-                    elseif (isset($_POST['delete_job'])) {
-                        $jobRef = sanitize_input($_POST['delete_job_ref']);
-                        $query = "DELETE FROM eoi WHERE job_reference = '$jobRef'";
-                        if (mysqli_query($conn, $query)) {
-                            echo "<div class='success-message'>Successfully deleted all EOIs for job reference: $jobRef</div>";
-                        } else {
-                            echo "<div class='error-message'>Error deleting EOIs: " . mysqli_error($conn) . "</div>";
-                        }
-                    }
-                    
-                    elseif (isset($_POST['update_status'])) {
-                        $eoiNumber = sanitize_input($_POST['eoi_number']);
-                        $newStatus = sanitize_input($_POST['new_status']);
-                        
-                        // First, check if the EOI number exists
-                        $checkQuery = "SELECT EOInumber FROM eoi WHERE EOInumber = '$eoiNumber'";
-                        $checkResult = mysqli_query($conn, $checkQuery);
-                        
-                        if (mysqli_num_rows($checkResult) > 0) {
-                            // EOI exists, proceed with update
-                            $query = "UPDATE eoi SET status = '$newStatus' WHERE EOInumber = '$eoiNumber'";
-                            if (mysqli_query($conn, $query)) {
-                                echo "<div class='success-message'>Successfully updated status for EOI number: $eoiNumber</div>";
-                            } else {
-                                echo "<div class='error-message'>Error updating status: " . mysqli_error($conn) . "</div>";
-                            }
-                        } else {
-                            // EOI does not exist
-                            echo "<div class='error-message'>Error: EOI number $eoiNumber does not exist in the database</div>";
-                        }
-                    }
-                    
-                    mysqli_close($conn);
+                // Handle different operations based on form submission
+                if (isset($_POST['list_all'])) {
+                    $query = "SELECT * FROM eoi" . $sort_clause;
+                    $result = mysqli_query($conn, $query);
+                    display_results($result);
                 }
+                
+                elseif (isset($_POST['list_by_job'])) {
+                    $jobRef = sanitize_input($_POST['job_ref']);
+                    $query = "SELECT * FROM eoi WHERE job_reference = '$jobRef'" . $sort_clause;
+                    $result = mysqli_query($conn, $query);
+                    display_results($result);
+                }
+                
+                elseif (isset($_POST['list_by_name'])) {
+                    $firstName = sanitize_input($_POST['first_name']);
+                    $lastName = sanitize_input($_POST['last_name']);
+                    $query = "SELECT * FROM eoi WHERE 1=1";
+                    if (!empty($firstName)) {
+                        $query .= " AND first_name LIKE '%$firstName%'";
+                    }
+                    if (!empty($lastName)) {
+                        $query .= " AND last_name LIKE '%$lastName%'";
+                    }
+                    $query .= $sort_clause;
+                    $result = mysqli_query($conn, $query);
+                    display_results($result);
+                }
+                
+                elseif (isset($_POST['delete_job'])) {
+                    $jobRef = sanitize_input($_POST['delete_job_ref']);
+                    $query = "DELETE FROM eoi WHERE job_reference = '$jobRef'";
+                    if (mysqli_query($conn, $query)) {
+                        echo "<div class='success-message'>Successfully deleted all EOIs for job reference: $jobRef</div>";
+                    } else {
+                        echo "<div class='error-message'>Error deleting EOIs: " . mysqli_error($conn) . "</div>";
+                    }
+                }
+                
+                elseif (isset($_POST['update_status'])) {
+                    $eoiNumber = sanitize_input($_POST['eoi_number']);
+                    $newStatus = sanitize_input($_POST['new_status']);
+                    
+                    // First, check if the EOI number exists
+                    $checkQuery = "SELECT EOInumber FROM eoi WHERE EOInumber = '$eoiNumber'";
+                    $checkResult = mysqli_query($conn, $checkQuery);
+                    
+                    if (mysqli_num_rows($checkResult) > 0) {
+                        // EOI exists, proceed with update
+                        $query = "UPDATE eoi SET status = '$newStatus' WHERE EOInumber = '$eoiNumber'";
+                        if (mysqli_query($conn, $query)) {
+                            echo "<div class='success-message'>Successfully updated status for EOI number: $eoiNumber</div>";
+                        } else {
+                            echo "<div class='error-message'>Error updating status: " . mysqli_error($conn) . "</div>";
+                        }
+                    } else {
+                        // EOI does not exist
+                        echo "<div class='error-message'>Error: EOI number $eoiNumber does not exist in the database</div>";
+                    }
+                }
+                
+                mysqli_close($conn);
             }
-            ?>
-        </div>
+            echo '</div>'; // Close the results container
+        }
+        ?>
 
         <!-- List All EOIs -->
         <div class="management-section">
