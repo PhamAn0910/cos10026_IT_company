@@ -23,7 +23,7 @@
 }
 
 /* Responsive styles for mobile */
-@media screen and (max-width: 920px) {
+@media screen and (max-width: 950px) {
     .menu-toggle {
         display: block;
     }

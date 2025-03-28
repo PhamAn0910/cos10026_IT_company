@@ -272,33 +272,6 @@ footer {
     }
 }
 
-@media screen and (max-width: 920px) {
-    nav {
-        margin: 0 auto; /* Centers the navbar */
-        padding: 10px 0;
-        flex-direction: column;
-        text-align: center; /* Ensures the menu items align properly */
-    }
-
-    .homepage nav ul {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    nav ul {
-        flex-direction: column;
-        align-items: center;
-        padding: 0;
-        margin: 0;
-        list-style: none;
-    }
-
-    .homepage figcaption {
-        padding-top: 16rem;
-        margin: auto 50%;
-    }
-}
-
 .homepage section {
     background-color: var(--dark-green);
     color: white;
