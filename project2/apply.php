@@ -120,7 +120,7 @@ Manually entered values must match exactly.">
         <input type="checkbox" id="javascript" name="skill-3" value="JavaScript">
         <label for="javascript">JavaScript</label><br>
 
-        <input type="checkbox" id="other-skills" name="skill-list" value="Other">
+        <input type="checkbox" id="other-skills" name="other-skills" value="Other">
         <label for="other-skills">Other skills...</label><br>
 
         <p>
