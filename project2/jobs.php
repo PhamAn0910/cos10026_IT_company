@@ -81,21 +81,21 @@
 
   echo "</main>";
 
-  echo "<aside>"; // Aside - Sidebar
-  echo "<h2>Why <br> <span>Join Us?</span></h2>";
-  echo "<section>";
-  echo "<p><i>SonixWave offers a dynamic and innovative work environment, competitive 
-    salaries, and opportunities for growth in the tech industry.</i></p>";
+    echo "<aside>"; // Aside - Sidebar
+    echo "<h2>Why <br> <span>Join Us?</span></h2>";
+    echo "<section>";
+    echo "<p><i>SonixWave offers a dynamic and innovative work environment, competitive 
+      salaries, and opportunities for growth in the tech industry.</i></p>";
 
-  echo "<h3>Employee Benefits</h3>";
-  echo "<ul>";	
-  echo "<li>Flexible working hours</li>";
-  echo "<li>Remote work options</li>";
-  echo "<li>Health and wellness programs</li>";
-  echo "<li>Professional development and training</li>";
-  echo "</ul>";
-  echo "</section>";
-  echo "</aside>";
+    echo "<h3>Employee Benefits</h3>";
+    echo "<ul>";	
+    echo "<li>Flexible working hours</li>";
+    echo "<li>Remote work options</li>";
+    echo "<li>Health and wellness programs</li>";
+    echo "<li>Professional development and training</li>";
+    echo "</ul>";
+    echo "</section>";
+    echo "</aside>";
 
   echo "</div>"; // Close jobs-context div
 
