@@ -22,7 +22,7 @@
 }
 
 /* Staggered delay for each letter */
-/* .footer-logo span:nth-child(1) { transition-delay: 0.1s; }
+.footer-logo span:nth-child(1) { transition-delay: 0.1s; }
 .footer-logo span:nth-child(2) { transition-delay: 0.25s; }
 .footer-logo span:nth-child(3) { transition-delay: 0.4s; }
 .footer-logo span:nth-child(4) { transition-delay: 0.55s; }
@@ -30,21 +30,19 @@
 .footer-logo span:nth-child(6) { transition-delay: 0.85s; }
 .footer-logo span:nth-child(7) { transition-delay: 1.0s; }
 .footer-logo span:nth-child(8) { transition-delay: 1.15s; }
-.footer-logo span:nth-child(9) { transition-delay: 1.3s; } */
+.footer-logo span:nth-child(9) { transition-delay: 1.3s; }
 
 /* Alternate version with bouncy effect - uncomment to use this instead */
 
-@keyframes popUp {
+/* @keyframes popUp {
     0% { 
         transform: translateY(20px);
-        /* opacity: 0; */
     }
     70% {
         transform: translateY(-40px);
     }
     100% { 
         transform: translateY(0);
-        /* opacity: 1; */
     }
 }
 
@@ -61,10 +59,4 @@
 .footer-logo span:nth-child(7) { animation-delay: 0.7s; }
 .footer-logo span:nth-child(8) { animation-delay: 0.6s; }
 .footer-logo span:nth-child(9) { animation-delay: 0.5s; }
-
-
-
-
-
-
-
+ */

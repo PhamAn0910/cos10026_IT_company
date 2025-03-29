@@ -42,10 +42,10 @@
 
         <label for="DOB">Date of Birth:</label>
         <input type="text" id="DOB" name="DOB" required placeholder="dd/mm/yyyy"
-        pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19[7-9][5-9]|200[0-4])$" 
+        pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19[5-9][0-9]|194[5-9]|200[0-9]|201[0])$" 
         title="Please enter the date in valid format: dd/mm/yyyy (eg.12/02/2002).
-Our company hires candidates aged 20-50 years (ie.01/01/1975 - 31/12/2004)."><br>
-      </fieldset>
+        We hires candidates aged 15-80 years (ie.born between 1945-2010)."><br>
+        </fieldset>
 
       <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend id="enhancement3-1">Gender</legend>
@@ -120,7 +120,7 @@ Manually entered values must match exactly.">
         <input type="checkbox" id="javascript" name="skill-3" value="JavaScript">
         <label for="javascript">JavaScript</label><br>
 
-        <input type="checkbox" id="other-skills" name="skill-list" value="Other">
+        <input type="checkbox" id="other-skills" name="other-skills" value="Other">
         <label for="other-skills">Other skills...</label><br>
 
         <p>
