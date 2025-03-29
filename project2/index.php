@@ -40,8 +40,8 @@
           Whether you're a business seeking cutting-edge tech or an artist looking for digital transformation, we orchestrate success through creativity and technology.
         </p>
         <div class="hero-buttons">
-          <a href="jobs.html" class="btn primary-btn" id="enhancement4-1">Explore Jobs</a>
-          <a href="apply.html" class="btn secondary-btn">Join Us</a>
+          <a href="jobs.php" class="btn primary-btn" id="enhancement4-1">Explore Jobs</a>
+          <a href="apply.php" class="btn secondary-btn">Join Us</a>
         </div>
       </figcaption>
     </figure>
