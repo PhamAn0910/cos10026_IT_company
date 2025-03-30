@@ -130,7 +130,7 @@ function validate_name($name, $fieldName) {
         return "$fieldName cannot be empty.";
     }
     if (!preg_match("/^[A-Za-z]{1," . MAX_NAME_LENGTH . "}$/", $name)) {
-        return "$fieldName must contain only letters (max 20 characters).";
+        return "$fieldName must contain only letters (max " .MAX_NAME_LENGTH . " characters).";
     }
     return "";
 }
@@ -170,7 +170,7 @@ function validate_address($address) {
     if (empty($address)) {
         return "Street address cannot be empty.";
     }
-    if (!preg_match("/^[A-Za-z0-9\s\-\/,.]{1, " . MAX_ADDRESS_LENGTH . "}$/", $address)) {
+    if (!preg_match("/^[A-Za-z0-9\s\-\/,.]{1," . MAX_ADDRESS_LENGTH . "}$/", $address)) {
         return "Street address can only contain letters, numbers, spaces, and basic punctuation.";
     }
     if (strlen($address) > MAX_ADDRESS_LENGTH) {
@@ -183,7 +183,7 @@ function validate_suburb($suburb) {
     if (empty($suburb)) {
         return "Suburb/Town cannot be empty.";
     }
-    if (!preg_match("/^[A-Za-z\s\-']{1, " . MAX_SUBURB_LENGTH . "}$/", $suburb)) {
+    if (!preg_match("/^[A-Za-z\s\-']{1," . MAX_SUBURB_LENGTH . "}$/", $suburb)) {
         return "Suburb/Town can only contain letters, spaces, hyphens and apostrophes.";
     }
     if (strlen($suburb) > MAX_SUBURB_LENGTH) {
@@ -244,7 +244,7 @@ function validate_job_reference($jobRef) {
     if (empty($jobRef)) {
         return "Job reference number cannot be empty.";
     }
-    if (!preg_match("/^[A-Za-z0-9]{ " . MAX_JOBREF_LENGTH . "}$/", $jobRef)) {
+    if (!preg_match("/^[A-Za-z0-9]{" . MAX_JOBREF_LENGTH . "}$/", $jobRef)) {
         return "Job reference must be exactly " .MAX_JOBREF_LENGTH . " alphanumeric characters (letters and numbers only).";
     }
     return "";
