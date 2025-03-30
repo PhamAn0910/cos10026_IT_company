@@ -1106,8 +1106,7 @@ text-align: center;
 }
 
 /* Application Response Pages */
-.success-container,
-.error-container {
+.success-container, .error-container {
     max-width: 80%;
     margin: 4em auto;
     padding: 2.5rem;
@@ -1117,24 +1116,21 @@ text-align: center;
     text-align: center;
 }
 
-.success-container h2,
-.error-container h2 {
+.success-container h2, .error-container h2 {
     font-family: var(--font-serif);
     font-size: 2.5rem;
     color: var(--dark-brown);
     margin-bottom: 1.5rem;
 }
 
-.confirmation-details,
-.error-message {
+.confirmation-details, .error-message {
     font-family: var(--font-sans-serif);
     line-height: 1.6;
     color: var(--text-color);
 }
 
 /* Success Page Specific Styles */
-.application-details,
-.next-steps {
+.application-details, .next-steps {
     background-color: #f9f9f9;
     border-radius: 12px;
     padding: 1.5rem;
@@ -1142,8 +1138,7 @@ text-align: center;
     text-align: left;
 }
 
-.application-details h3,
-.next-steps h3 {
+.application-details h3, .next-steps h3 {
     color: var(--dark-green);
     font-family: var(--font-serif);
     font-size: 1.4rem;
@@ -1185,8 +1180,7 @@ text-align: center;
     gap: 20px;
 }
 
-.action-links .button,
-.action-links .link {
+.action-links .button, .action-links .link {
     display: inline-block;
     text-decoration: none;
     font-size: 1rem;
@@ -1269,21 +1263,98 @@ text-align: center;
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
-    .success-container,
-    .error-container {
+    .success-container, .error-container {
         max-width: 95%;
         padding: 1.5rem;
         margin: 2em auto;
     }
 
-    .success-container h2,
-    .error-container h2 {
+    .success-container h2, .error-container h2 {
         font-size: 2rem;
     }
 
-    .application-details,
-    .next-steps,
-    .error-actions {
+    .application-details, .next-steps, .error-actions {
         padding: 1rem;
     }
+}
+
+/* PHP Enhancement Page Styles */
+.enhancement-documentation {
+    max-width: 80%;
+    margin: 4em auto;
+    padding: 0 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .enhancement-documentation {
+        max-width: 95%;
+        margin: 2em auto;
+    }
+    
+    .enhancement-documentation h1 {
+        font-size: 2rem;
+    }
+}
+
+.enhancement-documentation section {
+    background-color: white;
+    border: transparent;
+    border-radius: 10px;
+    padding: 40px;
+    width: 100%;
+    margin: 20px 0;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.enhancement-documentation h1 {
+    color: var(--dark-brown);
+    font-family: var(--font-serif);
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+}
+
+.enhancement-documentation h2 {
+    font-size: 25px; 
+    font-weight: bold;
+    font-family: var(--font-sans-serif);
+    border-bottom: 2px solid #ccc; 
+    padding: 5px 10px; 
+    margin-bottom: 1rem; 
+    color: var(--dark-green); 
+}
+
+
+.enhancement-documentation h3 {
+    color: var(--pink);
+    font-size: 1.4rem;
+    margin: 1.5rem 15px 1rem;
+    font-family: var(--font-serif);
+}
+
+/* Code block styling */
+.enhancement-documentation pre {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: -32px 0 0 0;
+    overflow-x: auto;
+}
+
+.enhancement-documentation code {
+    font-family: monospace;
+    color: var(--dark-green);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* List styling */
+.enhancement-documentation ul {
+    padding-left: 1.1em;
+    margin: 1rem 0;
+    line-height: 1.6;
+}
+
+.enhancement-documentation li {
+    margin: 0.5rem 0;
+    color: var(--text-color);
 }

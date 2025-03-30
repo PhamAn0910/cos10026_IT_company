@@ -11,7 +11,14 @@
     
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/responsive-nav.css">
+    <script src="scripts/nav-toggle.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 </head>
+
 <body>
     <?php include 'header.inc'; ?>
     
@@ -30,7 +37,7 @@
 
         <section class="implementation-details">
             <h2>Implementation Details</h2>
-            <h3>Code Snippet:</h3>
+            <h3>Code Snippet</h3>
             <pre><code>
 
 function get_sort_clause() {
@@ -44,13 +51,21 @@ function get_sort_clause() {
     $sort_order = isset($_POST['sort_order']) ? 
         sanitize_input($_POST['sort_order']) : 'DESC';
     
-    // Special handling for status field
+        // Special handling for status field to sort in logical order (New, Current, Final)
     if ($sort_field == 'status') {
-        return " ORDER BY CASE status 
-            WHEN 'New' THEN 1 
-            WHEN 'Current' THEN 2 
-            WHEN 'Final' THEN 3 
-            ELSE 4 END " . $sort_order;
+        if ($sort_order == 'ASC') {
+            return " ORDER BY CASE status 
+                      WHEN 'New' THEN 1 
+                      WHEN 'Current' THEN 2 
+                      WHEN 'Final' THEN 3 
+                      ELSE 4 END";
+        } else { // DESC
+            return " ORDER BY CASE status 
+                      WHEN 'Final' THEN 1 
+                      WHEN 'Current' THEN 2 
+                      WHEN 'New' THEN 3 
+                      ELSE 4 END";
+        }
     }
     
     return " ORDER BY $sort_field $sort_order";
