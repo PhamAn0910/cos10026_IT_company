@@ -1,7 +1,76 @@
 <?php
-require_once("settings.php");
+/**
+ * Process EOI Form Submission
+ * This script handles the Expression of Interest form submission,
+ * validates input data, and stores it in the database
+ */
 
-// Function to sanitize input data
+// 1. Initialize required resources
+require_once("settings.php");
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// 2. Define validation constants
+define('MIN_AGE', 15);
+define('MAX_AGE', 80);
+define('MAX_ADDRESS_LENGTH', 40);
+define('MAX_NAME_LENGTH', 20);
+define('MIN_PHONE_LENGTH', 8);
+define('MAX_PHONE_LENGTH', 12);
+
+// 3. Helper functions
+/**
+ * Create database connection with error handling
+ * @return mysqli Database connection object
+ * @throws Exception if connection fails
+ */
+function create_database_connection() {
+    global $host, $user, $pwd, $sql_db;
+    
+    // Attempt to connect to database
+    $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
+    
+    // Check connection
+    if (!$conn) {
+        error_log("Database connection failed: " . mysqli_connect_error());
+        throw new Exception("Unable to connect to the database. Please try again later.");
+    }
+    
+    return $conn;
+}
+
+/**
+ * Create EOI table if it doesn't exist
+ * @param mysqli $conn Database connection
+ * @throws Exception if table creation fails
+ */
+function create_eoi_table($conn) {
+    $query = "CREATE TABLE IF NOT EXISTS eoi (
+        eoi_id INT AUTO_INCREMENT PRIMARY KEY,
+        job_reference VARCHAR(5) NOT NULL,
+        first_name VARCHAR(20) NOT NULL,
+        last_name VARCHAR(20) NOT NULL,
+        date_of_birth DATE NOT NULL,
+        gender VARCHAR(10) NOT NULL,
+        street_address VARCHAR(40) NOT NULL,
+        suburb VARCHAR(40) NOT NULL,
+        state VARCHAR(3) NOT NULL,
+        postcode VARCHAR(4) NOT NULL,
+        email VARCHAR(100) NOT NULL,
+        phone VARCHAR(12) NOT NULL,
+        skills TEXT NOT NULL,
+        other_skills TEXT,
+        status VARCHAR(20) DEFAULT 'New' NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+    
+    if (!$conn->query($query)) {
+        error_log("Table creation failed: " . $conn->error);
+        throw new Exception("Database setup failed. Please contact support.");
+    }
+}
+
 function sanitize_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
@@ -9,296 +78,360 @@ function sanitize_input($data) {
     return $data;
 }
 
-// Initialize variables to store form data
+// 4. Validation functions - grouped by type
+// 4.1 Personal Information validation
+function validate_name($name, $fieldName) {
+    if (empty($name)) {
+        return "$fieldName cannot be empty.";
+    }
+    if (!preg_match("/^[A-Za-z]{1," . MAX_NAME_LENGTH . "}$/", $name)) {
+        return "$fieldName must contain only letters (max 20 characters).";
+    }
+    return "";
+}
+
+function validate_date($date) {
+    if (empty($date)) {
+        return "Date of birth cannot be empty.";
+    }
+    
+    // Check format dd/mm/yyyy
+    if (!preg_match("/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19[4-9][0-9]|20[0-1][0-9])$/", $date)) {
+        return "Date must be in dd/mm/yyyy format (e.g., 25/04/2000).";
+    }
+    
+    $dateParts = explode('/', $date);
+    // Validate actual date
+    if (!checkdate($dateParts[1], $dateParts[0], $dateParts[2])) {
+        return "Please enter a valid date.";
+    }
+    
+    $dob = DateTime::createFromFormat('Y-m-d', $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0]);
+    $today = new DateTime();
+    $age = $today->diff($dob)->y;
+    
+    if ($age < MIN_AGE) {
+        return "You must be at least " . MIN_AGE . " years old to apply.";
+    }
+    if ($age > MAX_AGE) {
+        return "Age cannot exceed " . MAX_AGE . " years.";
+    }
+    
+    return "";
+}
+
+// 4.2 Contact Information validation
+function validate_address($address) {
+    if (empty($address)) {
+        return "Street address cannot be empty.";
+    }
+    if (!preg_match("/^[A-Za-z0-9\s\-\/,.]{1,40}$/", $address)) {
+        return "Street address can only contain letters, numbers, spaces, and basic punctuation.";
+    }
+    if (strlen($address) > MAX_ADDRESS_LENGTH) {
+        return "Street address must not exceed " . MAX_ADDRESS_LENGTH . " characters.";
+    }
+    return "";
+}
+
+function validate_suburb($suburb) {
+    if (empty($suburb)) {
+        return "Suburb/Town cannot be empty.";
+    }
+    if (!preg_match("/^[A-Za-z\s\-']{1,40}$/", $suburb)) {
+        return "Suburb/Town can only contain letters, spaces, hyphens and apostrophes.";
+    }
+    if (strlen($suburb) > MAX_ADDRESS_LENGTH) {
+        return "Suburb/Town must not exceed " . MAX_ADDRESS_LENGTH . " characters.";
+    }
+    return "";
+}
+
+function validate_state_postcode($state, $postcode) {
+    $state_postcodes = [
+        'VIC' => ['pattern' => '/^(3[0-9]{3}|8[0-9]{3})$/', 'ranges' => '3000-3999 or 8000-8999'],
+        'NSW' => ['pattern' => '/^2[0-9]{3}$/', 'ranges' => '2000-2999'],
+        'QLD' => ['pattern' => '/^4[0-9]{3}$/', 'ranges' => '4000-4999'],
+        'NT'  => ['pattern' => '/^0[0-9]{3}$/', 'ranges' => '0800-0999'],
+        'WA'  => ['pattern' => '/^6[0-9]{3}$/', 'ranges' => '6000-6999'],
+        'SA'  => ['pattern' => '/^5[0-9]{3}$/', 'ranges' => '5000-5999'],
+        'TAS' => ['pattern' => '/^7[0-9]{3}$/', 'ranges' => '7000-7999'],
+        'ACT' => ['pattern' => '/^2[0-9]{3}$/', 'ranges' => '2600-2618']
+    ];
+    
+    if (!array_key_exists($state, $state_postcodes)) {
+        return "Please select a valid state.";
+    }
+    
+    if (!preg_match("/^\d{4}$/", $postcode)) {
+        return "Postcode must be exactly 4 digits.";
+    }
+    
+    if (!preg_match($state_postcodes[$state]['pattern'], $postcode)) {
+        return "Postcode must be in range " . $state_postcodes[$state]['ranges'] . " for $state.";
+    }
+    
+    return "";
+}
+
+function validate_email($email) {
+    if (empty($email)) {
+        return "Email address cannot be empty.";
+    }
+    $pattern = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
+    if (!preg_match($pattern, $email)) {
+        return "Please enter a valid email address format (e.g., name@example.com).";
+    }
+    return "";
+}
+
+function validate_phone($phone) {
+    if (empty($phone)) {
+        return "Phone number cannot be empty.";
+    }
+    $phoneClean = str_replace(' ', '', $phone);
+    if (!preg_match("/^\d{" . MIN_PHONE_LENGTH . "," . MAX_PHONE_LENGTH . "}$/", $phoneClean)) {
+        return "Phone number must contain between " . MIN_PHONE_LENGTH . " and " . MAX_PHONE_LENGTH . " digits (spaces allowed).";
+    }
+    return "";
+}
+function validate_job_reference($jobRef) {
+    if (empty($jobRef)) {
+        return "Job reference number cannot be empty.";
+    }
+    if (!preg_match("/^[A-Za-z0-9]{5}$/", $jobRef)) {
+        return "Job reference must be exactly 5 alphanumeric characters (letters and numbers only).";
+    }
+    return "";
+}
+
+function validate_skills($skillsArray, $otherSkills, $otherSkillsChecked) {
+    if (empty($skillsArray) && !$otherSkillsChecked) {
+        return "Please select at least one skill.";
+    }
+    
+    if ($otherSkillsChecked && empty($otherSkills)) {
+        return "Please specify your other skills or uncheck the option.";
+    }
+    
+    return "";
+}
+
+// 5. Display functions
+function display_error($errors) {
+    echo "<!DOCTYPE html>";
+    echo "<html lang='en'>";
+    echo "<head>";
+    echo "  <meta charset='UTF-8'>";
+    echo "  <meta name='description'  content='IT Company - Apply Form Expression of Interest'>";
+    echo "  <meta name='keywords'     content='HTML5, CSS'>";
+    echo "  <meta name='author'       content='Le Ngoc Quynh Trang, Pham Truong Que An'>";
+    echo "  <meta name='viewport'     content='width=device-width, initial-scale=1.0'>";
+    echo "  <title>SonixWave | Application Submission Error Page</title>";
+    echo "  <link rel='stylesheet' href='styles/style.css'>";
+    echo "  <link rel='stylesheet' href='styles/responsive-nav.css'>";
+    echo "  <script src='scripts/nav-toggle.js'></script>";
+    echo "  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap'>";
+    echo "  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap'>";
+    echo "  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css'>";
+    echo "  <script src='https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js'></script>";
+    echo "</head>";
+    echo "<body>";
+    require_once("header.inc");
+    echo '<div class="error-container">';
+    echo '<h2>Application Submission Error</h2>';
+    echo '<div class="error-message">';
+    echo '<p>We cannot process your application due to the following issues:</p>';
+    echo '<ul class="error-list">';
+    foreach ($errors as $error) {
+        echo "<li>" . htmlspecialchars($error) . "</li>";
+    }
+    echo '</ul>';
+    echo '<div class="error-actions">';
+    echo '<p>Please:</p>';
+    echo '<ul>';
+    echo '<li>Review the errors listed above</li>';
+    echo '<li>Click the Back button below to return to the form</li>';
+    echo '<li>Correct the information and submit again</li>';
+    echo '</ul>';
+    echo '<p><a href="javascript:history.back()" class="button">← Back to Application Form</a></p>';
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
+    require_once("footer.inc");
+    echo '</body>';
+    echo '</html>';
+}
+
+function display_success($eoiNumber, $jobRef, $firstName, $lastName) {
+    echo "<!DOCTYPE html>";
+    echo "<html lang='en'>";
+    echo "<head>";
+    echo "  <meta charset='UTF-8'>";
+    echo "  <meta name='description'  content='IT Company - Apply Form Expression of Interest'>";
+    echo "  <meta name='keywords'     content='HTML5, CSS'>";
+    echo "  <meta name='author'       content='Le Ngoc Quynh Trang, Pham Truong Que An'>";
+    echo "  <meta name='viewport'     content='width=device-width, initial-scale=1.0'>";
+    echo "  <title>SonixWave | Application Submission Error Page</title>";
+    echo "  <link rel='stylesheet' href='styles/style.css'>";
+    echo "  <link rel='stylesheet' href='styles/responsive-nav.css'>";
+    echo "  <script src='scripts/nav-toggle.js'></script>";
+    echo "  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap'>";
+    echo "  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap'>";
+    echo "  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css'>";
+    echo "  <script src='https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js'></script>";
+    echo "</head>";
+    echo "<body>";
+    require_once("header.inc");
+    echo '<div class="success-container">';
+    echo '<h2>Application Submitted Successfully</h2>';
+    echo '<div class="confirmation-details">';
+    echo "<p>Thank you for your application, " . htmlspecialchars($firstName . " " . $lastName) . "!</p>";
+    echo "<p>Your Expression of Interest has been successfully received and recorded in our system.</p>";
+    echo "<div class='application-details'>";
+    echo "<h3>Important Information</h3>";
+    echo "<ul>";
+    echo "<li>EOI Reference Number: <strong>" . htmlspecialchars($eoiNumber) . "</strong></li>";
+    echo "<li>Job Reference: <strong>" . htmlspecialchars($jobRef) . "</strong></li>";
+    echo "</ul>";
+    echo "</div>";
+    echo "<div class='next-steps'>";
+    echo "<h3>Next Steps</h3>";
+    echo "<ol>";
+    echo "<li>Save your EOI Reference Number for all future correspondence</li>";
+    echo "<li>Our HR team will review your application within 5 business days</li>";
+    echo "<li>You will receive an email confirmation shortly</li>";
+    echo "</ol>";
+    echo "</div>";
+    echo "<div class='action-links'>";
+    echo '<p><a href="index.php" class="button">Return to Home Page</a></p>';
+    echo '<p><a href="jobs.php" class="link">View More Job Opportunities</a></p>';
+    echo "</div>";
+    echo '</div>';
+    echo '</div>';
+    require_once("footer.inc");
+    echo '</body>';
+    echo '</html>';
+}
+
+// 6. Form submission check
+if ($_SERVER["REQUEST_METHOD"] !== "POST" || !isset($_POST["reference-num"])) {
+    header("Location: apply.php");
+    exit();
+}
+
+// 7. Initialize variables
+$errors = [];
 $firstName = $lastName = $dob = $gender = $streetAddress = $suburb = "";
 $state = $postcode = $email = $phone = $jobRef = $skills = $otherSkills = "";
-$errMsg = "";
 
-// State postcode mapping for validation
-$statePostcodeMap = [
-    'VIC' => ['3', '8'],
-    'NSW' => ['1', '2'],
-    'QLD' => ['4', '9'],
-    'NT' => ['0'],
-    'WA' => ['6'],
-    'SA' => ['5'],
-    'TAS' => ['7'],
-    'ACT' => ['0', '2']
-];
-
-// Valid states
-$validStates = ['VIC', 'NSW', 'QLD', 'NT', 'WA', 'SA', 'TAS', 'ACT'];
-
-// Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate and sanitize input data
-    $firstName = sanitize_input($_POST["first-name"]);
-    $lastName = sanitize_input($_POST["last-name"]);
+// 8. Process form data
+try {
+    // Sanitize and validate all inputs
+    $jobRef = sanitize_input($_POST["reference-num"]); 
+    $firstName = sanitize_input($_POST["first-name"]); 
+    $lastName = sanitize_input($_POST["last-name"]); 
     $dob = sanitize_input($_POST["DOB"]);
-    $gender = isset($_POST["gender"]) ? sanitize_input($_POST["gender"]) : "";
-    $streetAddress = sanitize_input($_POST["street-address"]);
+    $gender = sanitize_input($_POST["gender"]);
+    $streetAddress = sanitize_input($_POST["street-address"]); 
     $suburb = sanitize_input($_POST["suburb"]);
     $state = sanitize_input($_POST["state"]);
     $postcode = sanitize_input($_POST["postcode"]);
     $email = sanitize_input($_POST["email"]);
-    $phone = sanitize_input($_POST["phone-num"]);
-    $jobRef = sanitize_input($_POST["reference-num"]);
-    
+    $phone = sanitize_input($_POST["phone-num"]); 
+
     // Process skills
-    $skillsArray = array();
-    if (isset($_POST["skill-1"])) $skillsArray[] = sanitize_input($_POST["skill-1"]);
-    if (isset($_POST["skill-2"])) $skillsArray[] = sanitize_input($_POST["skill-2"]);
-    if (isset($_POST["skill-3"])) $skillsArray[] = sanitize_input($_POST["skill-3"]);
+    $skillsArray = isset($_POST["skills"]) ? $_POST["skills"] : [];
+    foreach ($skillsArray as &$skill) {
+        $skill = sanitize_input($skill);
+    }
     $skills = implode(", ", $skillsArray);
     
     $otherSkillsChecked = isset($_POST["other-skills"]);
-    $otherSkills = isset($_POST["other-skills-text"]) ? sanitize_input($_POST["other-skills-text"]) : "";
+    $otherSkills = $otherSkillsChecked ? sanitize_input($_POST["other-skills-text"]) : "";
 
-    // Validate required fields
-    if (empty($firstName) || empty($lastName) || empty($dob) || empty($gender) ||
-        empty($streetAddress) || empty($suburb) || empty($state) || empty($postcode) ||
-        empty($email) || empty($phone) || empty($jobRef)) {
-        $errMsg .= "All required fields must be filled out.<br>";
-    }
+    // 9. Validate all inputs
+    $validationErrors = [];
 
-    // Validate job reference number (exactly 5 alphanumeric characters)
-    if (!preg_match("/^[a-zA-Z0-9]{5}$/", $jobRef)) {
-        $errMsg .= "Job reference must be exactly 5 alphanumeric characters.<br>";
-    }
+    // Validate all fields with detailed error messages
+    $jobRefError = validate_job_reference($jobRef);
+    if ($jobRefError !== "") $validationErrors[] = $jobRefError;
 
-    // Validate first name (max 20 alpha characters)
-    if (!preg_match("/^[a-zA-Z]{1,20}$/", $firstName)) {
-        $errMsg .= "First name must contain only alphabetic characters and be maximum 20 characters long.<br>";
-    }
+    $firstNameError = validate_name($firstName, "First name");
+    if ($firstNameError !== "") $validationErrors[] = $firstNameError;
 
-    // Validate last name (max 20 alpha characters)
-    if (!preg_match("/^[a-zA-Z]{1,20}$/", $lastName)) {
-        $errMsg .= "Last name must contain only alphabetic characters and be maximum 20 characters long.<br>";
-    }
+    $lastNameError = validate_name($lastName, "Last name");
+    if ($lastNameError !== "") $validationErrors[] = $lastNameError;
 
-    // Validate date of birth (dd/mm/yyyy between 15 and 80 years old)
-    if (!preg_match("/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/", $dob)) {
-        $errMsg .= "Date of birth must be in format dd/mm/yyyy.<br>";
-    } else {
-        $dobParts = explode('/', $dob);
-        $day = $dobParts[0];
-        $month = $dobParts[1];
-        $year = $dobParts[2];
-        
-        // Check if date is valid
-        if (!checkdate($month, $day, $year)) {
-            $errMsg .= "Date of birth is not a valid date.<br>";
-        } else {
-            // Check age between 15 and 80
-            $birthDate = new DateTime($year . '-' . $month . '-' . $day);
-            $today = new DateTime();
-            $age = $today->diff($birthDate)->y;
+    $dobError = validate_date($dob);
+    if ($dobError !== "") $validationErrors[] = $dobError;
+
+    $addressError = validate_address($streetAddress);
+    if ($addressError !== "") $validationErrors[] = $addressError;
+
+    $suburbError = validate_suburb($suburb);
+    if ($suburbError !== "") $validationErrors[] = $suburbError;
+
+    $statePostcodeError = validate_state_postcode($state, $postcode);
+    if ($statePostcodeError !== "") $validationErrors[] = $statePostcodeError;
+
+    $emailError = validate_email($email);
+    if ($emailError !== "") $validationErrors[] = $emailError;
+
+    $phoneError = validate_phone($phone);
+    if ($phoneError !== "") $validationErrors[] = $phoneError;
+
+    $skillsError = validate_skills($skillsArray, $otherSkills, $otherSkillsChecked);
+    if ($skillsError !== "") $validationErrors[] = $skillsError;
+
+    // 10. Database operations
+    if (empty($validationErrors)) {
+        try {
+            $conn = create_database_connection();
             
-            if ($age < 15 || $age > 80) {
-                $errMsg .= "Age must be between 15 and 80 years.<br>";
-            }
-        }
-    }
-
-    // Validate gender (selected)
-    if (!in_array($gender, ['male', 'female', 'other'])) {
-        $errMsg .= "Please select a valid gender.<br>";
-    }
-
-    // Validate street address (max 40 characters)
-    if (strlen($streetAddress) > 40) {
-        $errMsg .= "Street address must be maximum 40 characters long.<br>";
-    }
-
-    // Validate suburb/town (max 40 characters)
-    if (strlen($suburb) > 40) {
-        $errMsg .= "Suburb/town must be maximum 40 characters long.<br>";
-    }
-
-    // Validate state (one of VIC, NSW, QLD, NT, WA, SA, TAS, ACT)
-    if (!in_array($state, $validStates)) {
-        $errMsg .= "State must be one of VIC, NSW, QLD, NT, WA, SA, TAS, ACT.<br>";
-    }
-
-    // Validate postcode (exactly 4 digits and matches state)
-    if (!preg_match("/^\d{4}$/", $postcode)) {
-        $errMsg .= "Postcode must be exactly 4 digits.<br>";
-    } else {
-        $validPostcode = false;
-        foreach ($statePostcodeMap[$state] as $prefix) {
-            if (substr($postcode, 0, 1) === $prefix) {
-                $validPostcode = true;
-                break;
-            }
-        }
-        if (!$validPostcode) {
-            $errMsg .= "Postcode does not match the selected state.<br>";
-        }
-    }
-
-    // Validate email address
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errMsg .= "Please enter a valid email address.<br>";
-    }
-
-    // Validate phone number (8 to 12 digits or spaces)
-    $phoneClean = str_replace(' ', '', $phone);
-    if (!preg_match("/^\d{8,12}$/", $phoneClean)) {
-        $errMsg .= "Phone number must contain 8 to 12 digits (spaces allowed).<br>";
-    }
-
-    // Validate other skills (not empty if checkbox selected)
-    if (!$otherSkillsChecked || empty($otherSkills)) {
-        $errMsg .= "Please specify your other skills or uncheck the 'Other Skills' option.<br>";
-    }
-
-    // If no errors, proceed with database insertion
-    if ($errMsg == "") {
-        $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
-        
-        if (!$conn) {
-            echo displayErrorPage("Database connection failure");
-        } else {
-            // Create EOI table if it doesn't exist
-            $sql_table = "eoi";
-            $createTableSQL = "CREATE TABLE IF NOT EXISTS $sql_table (
-                EOInumber INT AUTO_INCREMENT PRIMARY KEY,
-                job_reference VARCHAR(10),
-                first_name VARCHAR(20),
-                last_name VARCHAR(20),
-                date_of_birth DATE,
-                gender VARCHAR(10),
-                street_address VARCHAR(40),
-                suburb VARCHAR(40),
-                state VARCHAR(3),
-                postcode VARCHAR(4),
-                email VARCHAR(50),
-                phone VARCHAR(12),
-                skills TEXT,
-                other_skills TEXT,
-                status VARCHAR(20) DEFAULT 'New',
-                application_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )";
+            create_eoi_table($conn);
             
-            mysqli_query($conn, $createTableSQL);
+            // Convert date format for MySQL
+            $dateParts = explode('/', $dob);
+            $mysqlDate = "{$dateParts[2]}-{$dateParts[1]}-{$dateParts[0]}";
             
-            // Convert date format from dd/mm/yyyy to yyyy-mm-dd for MySQL
-            $dobParts = explode('/', $dob);
-            $mysqlDob = $dobParts[2] . '-' . $dobParts[1] . '-' . $dobParts[0];
-            
-            // Prepare statement to prevent SQL injection
-            $stmt = mysqli_prepare($conn, "INSERT INTO $sql_table (
+            // Prepare and execute insert statement with error handling
+            $insertSQL = $conn->prepare("INSERT INTO eoi (
                 job_reference, first_name, last_name, date_of_birth, gender,
                 street_address, suburb, state, postcode, email, phone,
-                skills, other_skills
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                skills, other_skills, status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')");
             
-            mysqli_stmt_bind_param($stmt, "sssssssssssss", 
-                $jobRef, $firstName, $lastName, $mysqlDob, $gender,
+            if (!$insertSQL) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            
+            $insertSQL->bind_param("sssssssssssss",
+                $jobRef, $firstName, $lastName, $mysqlDate, $gender,
                 $streetAddress, $suburb, $state, $postcode, $email, $phone,
                 $skills, $otherSkills
             );
             
-            $result = mysqli_stmt_execute($stmt);
-            
-            if ($result) {
-                $eoiNumber = mysqli_insert_id($conn);
-                displayConfirmationPage($firstName, $lastName, $eoiNumber);
-            } else {
-                echo displayErrorPage("Something went wrong with the database insertion: " . mysqli_error($conn));
+            if (!$insertSQL->execute()) {
+                throw new Exception("Error saving application: " . $insertSQL->error);
             }
             
-            mysqli_stmt_close($stmt);
-            mysqli_close($conn);
+            $eoiNumber = $insertSQL->insert_id;
+            $insertSQL->close();
+            $conn->close();
+            
+            display_success($eoiNumber, $jobRef, $firstName, $lastName);
+            
+        } catch (Exception $e) {
+            error_log("Database error: " . $e->getMessage());
+            throw new Exception("Unable to save your application. Please try again later.");
         }
     } else {
-        echo displayErrorPage($errMsg);
+        display_error($validationErrors);
     }
-}
 
-// Function to display user-friendly error page
-function displayErrorPage($errorMessage) {
-    $output = '<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Application Error</title>
-        <link rel="stylesheet" href="styles/style.css">
-    </head>
-    <body>
-        <header>    
-            <nav>
-                <span class="logo"><a href="https://youtu.be/KAIC4oCGNNc" target="_blank">SonixWave</a></span>       
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="jobs.html">Career</a></li>
-                    <li><a href="apply.html">Apply Now</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="enhancements.html">Enhancements</a></li>
-                    <li><a href="mailto:105028463@student.swin.edu.au,105192148@student.swin.edu.au">Contact</a></li>
-                </ul>
-            </nav>
-        </header>
-        <main>
-            <h1>Application Error</h1>
-            <div class="error-message">
-                <p>We encountered the following issues with your application:</p>
-                <p>' . $errorMessage . '</p>
-                <p><a href="javascript:history.back()">Go Back</a> to correct your information.</p>
-            </div>
-        </main>
-        <footer>
-            <p>&copy; 2025 SonixWave. All rights reserved.</p>
-            <p class="footer-logo">SonixWave</p>
-        </footer>
-    </body>
-    </html>';
-    
-    return $output;
-}
-
-// Function to display confirmation page
-function displayConfirmationPage($firstName, $lastName, $eoiNumber) {
-    ?>
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Application Confirmation</title>
-        <link rel="stylesheet" href="styles/style.css">
-    </head>
-    <body>
-        <header>    
-            <nav>
-                <span class="logo"><a href="https://youtu.be/KAIC4oCGNNc" target="_blank">SonixWave</a></span>       
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="jobs.html">Career</a></li>
-                    <li><a href="apply.html">Apply Now</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="enhancements.html">Enhancements</a></li>
-                    <li><a href="mailto:105028463@student.swin.edu.au,105192148@student.swin.edu.au">Contact</a></li>
-                </ul>
-            </nav>
-        </header>
-        <main>
-            <h1>Application Submitted Successfully!</h1>
-            <div class="confirmation-message">
-                <p>Thank you for your application, <?php echo htmlspecialchars($firstName . " " . $lastName); ?>!</p>
-                <p>Your Expression of Interest (EOI) number is: <strong><?php echo $eoiNumber; ?></strong></p>
-                <p>Please keep this number for future reference.</p>
-                <p>We will review your application and contact you soon.</p>
-                <p><a href="index.html">Return to Home Page</a></p>
-            </div>
-        </main>
-        <footer>
-            <p>&copy; 2025 SonixWave. All rights reserved.</p>
-            <p class="footer-logo">SonixWave</p>
-        </footer>
-    </body>
-    </html>
-    <?php
+} catch (Exception $e) {
+    error_log("Application processing error: " . $e->getMessage());
+    display_error(["An unexpected error occurred. Please try again later."]);
 }
 ?>

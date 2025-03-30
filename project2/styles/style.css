@@ -1104,3 +1104,186 @@ font-family: var(--font-serif);
 font-weight: 100;
 text-align: center;
 }
+
+/* Application Response Pages */
+.success-container,
+.error-container {
+    max-width: 80%;
+    margin: 4em auto;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    text-align: center;
+}
+
+.success-container h2,
+.error-container h2 {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    color: var(--dark-brown);
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-details,
+.error-message {
+    font-family: var(--font-sans-serif);
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+/* Success Page Specific Styles */
+.application-details,
+.next-steps {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: left;
+}
+
+.application-details h3,
+.next-steps h3 {
+    color: var(--dark-green);
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+.application-details ul {
+    list-style: none;
+    padding: 0;
+}
+
+.application-details li {
+    margin: 0.8rem 0;
+    font-size: 1.1rem;
+}
+
+.application-details strong {
+    color: var(--dark-green);
+    background-color: rgba(0, 77, 53, 0.1);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+}
+
+.next-steps ol {
+    padding-left: 1.5rem;
+}
+
+.next-steps li {
+    margin: 0.8rem 0;
+    color: var(--dark-brown);
+}
+
+.action-links {
+    margin-top: 30px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.action-links .button,
+.action-links .link {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 30px;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.action-links .button {
+    background-color: var(--pink);
+    color: white;
+}
+
+.action-links .button:hover {
+    background-color: #ff4f8b; /* Darker Pink */
+    transform: scale(1.05);
+}
+
+.action-links .link {
+    background-color: #f1f1f1;
+    color: var(--dark-green);
+}
+
+.action-links .link:hover {
+    transform: scale(1.05);
+}
+
+/* Error Page Specific Styles */
+.error-list {
+    background-color: #fff0f3;
+    border-left: 4px solid var(--pink);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    text-align: left;
+    list-style-type: none;
+}
+
+.error-list li {
+    margin: 0.8rem 0;
+    color: #d63384;
+    font-size: 1rem;
+}
+
+.error-actions {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.error-actions ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+    text-align: left;
+}
+
+.error-actions li {
+    margin: 0.5rem 0;
+    color: var(--dark-brown);
+}
+
+.error-actions .button {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--dark-green);
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    margin-top: 1rem;
+}
+
+.error-actions .button:hover {
+    background-color: var(--pink);
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .success-container,
+    .error-container {
+        max-width: 95%;
+        padding: 1.5rem;
+        margin: 2em auto;
+    }
+
+    .success-container h2,
+    .error-container h2 {
+        font-size: 2rem;
+    }
+
+    .application-details,
+    .next-steps,
+    .error-actions {
+        padding: 1rem;
+    }
+}

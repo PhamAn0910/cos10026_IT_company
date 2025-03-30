@@ -27,7 +27,7 @@
   <!-- Apply Form -->
   <main>
     <h1 id="form-title">Job Application</h1>
-    <form action="process_eoi.php" method="post">
+    <form method="post" action="process_eoi.php" novalidate="novalidate">
       <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend>Personal Details</legend>
         <label for="first-name">First Name:</label>
@@ -42,10 +42,10 @@
 
         <label for="DOB">Date of Birth:</label>
         <input type="text" id="DOB" name="DOB" required placeholder="dd/mm/yyyy"
-        pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19[5-9][0-9]|194[5-9]|200[0-9]|201[0])$" 
+        pattern="^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19[4-9][0-9]|20[0-1][0-9])$" 
         title="Please enter the date in valid format: dd/mm/yyyy (eg.12/02/2002).
-        We hires candidates aged 15-80 years (ie.born between 1945-2010)."><br>
-        </fieldset>
+Our company hires candidates aged 15-80 years (ie.01/01/1945 - 31/12/2010)."><br>
+      </fieldset>
 
       <fieldset data-aos="fade-up" data-aos-duration="1000" data-aos-once="true">
         <legend id="enhancement3-1">Gender</legend>
@@ -111,22 +111,22 @@ Manually entered values must match exactly.">
         <legend>Job Application Skills</legend>
         <p id="enhancement3-2">Skill list:</p>
         
-        <input type="checkbox" id="python" name="skill-1" value="Python" checked>
+        <input type="checkbox" id="python" name="skills[]" value="Python" checked>
         <label for="python">Python</label><br>
 
-        <input type="checkbox" id="html-css" name="skill-2" value="HTML & CSS">
+        <input type="checkbox" id="html-css" name="skills[]" value="HTML & CSS">
         <label for="html-css">HTML &amp; CSS</label><br>
 
-        <input type="checkbox" id="javascript" name="skill-3" value="JavaScript">
+        <input type="checkbox" id="javascript" name="skills[]" value="JavaScript">
         <label for="javascript">JavaScript</label><br>
 
-        <input type="checkbox" id="other-skills" name="other-skills" value="Other">
+        <input type="checkbox" id="other-skills" name="other_skills" value="Other">
         <label for="other-skills">Other skills...</label><br>
 
         <p>
           <label for="other-skills-text">Other skills (if any):</label>
         </p>
-        <textarea id="other-skills-text" name="other-skills-text" 
+        <textarea id="other-skills-text" name="other_skills_text" 
         placeholder="Write any other relevant skills that you might have..."></textarea><br>
       </fieldset>
 
@@ -143,4 +143,3 @@ Manually entered values must match exactly.">
 
 </body>
 </html>
-
