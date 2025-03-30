@@ -1409,6 +1409,12 @@ text-align: center;
     line-height: 1.5;
 }
 
+.enhancement-documentation code span {
+    color: var(--dark-brown);
+    font-weight: bold;
+    font-style: italic;
+}
+
 /* List styling */
 .enhancement-documentation ul {
     padding-left: 1.1em;

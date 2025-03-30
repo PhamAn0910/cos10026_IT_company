@@ -50,7 +50,7 @@ $sort_field = isset($_POST['sort_field']) ?
 $sort_order = isset($_POST['sort_order']) ? 
   sanitize_input($_POST['sort_order']) : 'DESC';
   
-  <span style="color: #3d1f15; font-style: italic; font-weight: bold;">// Special handling for status field to sort 
+  <span>// Special handling for status field to sort 
     in logical order (New, Current, Final)</span>
   if ($sort_field == 'status') {
     if ($sort_order == 'ASC') {
