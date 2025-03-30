@@ -31,7 +31,7 @@
             <ul>
                 <li>Sort by multiple fields (EOI Number, Job Reference, Name, Date, Status)</li>
                 <li>Choose sort direction (Ascending/Descending)</li>
-                <li>Handle special sorting for Status field (New → Current → Final)</li>
+                <li>Handle special sorting for Status field (New &rarr; Current &rarr; Final)</li>
             </ul>
         </section>
 
