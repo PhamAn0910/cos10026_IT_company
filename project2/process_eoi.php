@@ -306,7 +306,7 @@ function display_error($errors) {
     echo '<li>Click the Back button below to return to the form</li>';
     echo '<li>Correct the information and submit again</li>';
     echo '</ul>';
-    echo '<p><a href="javascript:history.back()" class="button">&larr; Back to Application Form</a></p>'; // &larr; = left arrow
+    echo '<a href="javascript:history.back()" class="button">Return Back</a>'; // &larr; = left arrow
     echo '</div>';
     echo '</div>';
     echo '</div>';
@@ -336,30 +336,30 @@ function display_success($eoiNumber, $jobRef, $firstName, $lastName) {
     echo "<body>";
     require_once("header.inc");
     echo '<div class="success-container">';
-    echo '<h2>Application Submitted Successfully</h2>';
-    echo '<div class="confirmation-details">';
-    echo "<p>Thank you for your application, " . htmlspecialchars($firstName . " " . $lastName) . "!</p>";
-    echo "<p>Your Expression of Interest has been successfully received and recorded in our system.</p>";
-    echo "<div class='application-details'>";
-    echo "<h3>Important Information</h3>";
-    echo "<ul>";
-    echo "<li>EOI Reference Number: <strong>" . htmlspecialchars($eoiNumber) . "</strong></li>";
-    echo "<li>Job Reference: <strong>" . htmlspecialchars($jobRef) . "</strong></li>";
-    echo "</ul>";
-    echo "</div>";
-    echo "<div class='next-steps'>";
-    echo "<h3>Next Steps</h3>";
-    echo "<ol>";
-    echo "<li>Save your EOI Reference Number for all future correspondence</li>";
-    echo "<li>Our HR team will review your application within 5 business days</li>";
-    echo "<li>You will receive an email confirmation shortly</li>";
-    echo "</ol>";
-    echo "</div>";
-    echo "<div class='action-links'>";
-    echo '<p><a href="index.php" class="button">&larr; Back to Homepage</a></p>'; //&larr; = left arrow
-    echo '<p><a href="jobs.php" class="link">Explore More Jobs &rarr;</a></p>'; //&rarr; = right arrow
-    echo "</div>";
-    echo '</div>';
+        echo '<h2>Application Submitted Successfully</h2>';
+        echo '<div class="confirmation-details">';
+        echo "<p>Thank you for your application, " . htmlspecialchars($firstName . " " . $lastName) . "!</p>";
+        echo "<p>Your Expression of Interest has been successfully received and recorded in our system.</p>";
+            echo "<div class='application-details'>";
+            echo "<h3>Important Information</h3>";
+                echo "<ul>";
+                    echo "<li>EOI Reference Number: <strong>" . htmlspecialchars($eoiNumber) . "</strong></li>";
+                    echo "<li>Job Reference: <strong>" . htmlspecialchars($jobRef) . "</strong></li>";
+                echo "</ul>";
+            echo "</div>";
+            echo "<div class='next-steps'>";
+            echo "<h3>Next Steps</h3>";
+                echo "<ol>";
+                    echo "<li>Save your EOI Reference Number for all future correspondence</li>";
+                    echo "<li>Our HR team will review your application within 5 business days</li>";
+                    echo "<li>You will receive an email confirmation shortly</li>";
+                echo "</ol>";
+            echo "</div>";
+            echo "<div class='action-links'>";
+                echo '<a href="index.php" class="button">&larr; Back to Home Page</a>'; //&larr; = left arrow
+                echo '<a href="jobs.php" class="link">View more Jobs &rarr;</a>'; //&rarr; = right arrow
+            echo "</div>";
+        echo '</div>';
     echo '</div>';
     require_once("footer.inc");
     echo '</body>';

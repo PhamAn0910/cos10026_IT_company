@@ -1200,10 +1200,19 @@ text-align: center;
     text-align: center;
 }
 
+.success-container {
+    padding: 0.8rem;
+}
+
 .success-container h2, .error-container h2 {
     font-family: var(--font-serif);
     font-size: 2.5rem;
     color: var(--dark-brown);
+    margin-top: 2rem;
+}
+
+.error-container h2 {
+    margin-top: 0;
     margin-bottom: 1.5rem;
 }
 
@@ -1211,6 +1220,19 @@ text-align: center;
     font-family: var(--font-sans-serif);
     line-height: 1.6;
     color: var(--text-color);
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.confirmation-details p {
+    margin: 1rem auto;
+    font-size: 1.1rem;
+    font-family: var(--font-sans-serif);
+}
+
+.error-message p {
+    text-align: left !important;
+    margin-left: 0.3rem;
 }
 
 /* SUCCESS PAGE SPECIFIC STYLES */
@@ -1218,8 +1240,13 @@ text-align: center;
     background-color: #f9f9f9;
     border-radius: 12px;
     padding: 1.5rem;
-    margin: 1.5rem 0;
+    margin: 2.5rem 0;
     text-align: left;
+}
+
+.next-steps {
+    background-color: #e6f9e6; /* Light green background */
+    border-left: 4px solid var(--dark-green); /* Green left border */
 }
 
 .application-details h3, .next-steps h3 {
@@ -1227,6 +1254,10 @@ text-align: center;
     font-family: var(--font-serif);
     font-size: 1.4rem;
     margin-bottom: 1rem;
+}
+
+.next-steps h3 {
+    color: var(--pink);
 }
 
 .application-details ul {
@@ -1256,7 +1287,6 @@ text-align: center;
 }
 
 .action-links {
-    margin-top: 30px;
     font-size: 20px;
     display: flex;
     justify-content: center;
@@ -1269,12 +1299,13 @@ text-align: center;
     text-decoration: none;
     font-size: 1rem;
     font-weight: 600;
-    padding: 12px 24px;
+    padding: 12px 15px;
     border-radius: 30px;
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
 .action-links .button {
+    max-width: 90%;
     background-color: var(--pink);
     color: white;
 }
@@ -1285,6 +1316,7 @@ text-align: center;
 }
 
 .action-links .link {
+    max-width: 80%;
     background-color: #f1f1f1;
     color: var(--dark-green);
 }
@@ -1313,7 +1345,7 @@ text-align: center;
 .error-actions {
     background-color: #f8f9fa;
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 1rem;
     margin-top: 2rem;
 }
 
@@ -1331,13 +1363,14 @@ text-align: center;
 
 .error-actions .button {
     display: inline-block;
-    padding: 0.8rem 1.5rem;
+    padding: 0.8rem 1.1rem;
     background-color: var(--dark-green);
     color: white;
     text-decoration: none;
     border-radius: 30px;
     transition: transform 0.3s ease, background-color 0.3s ease;
     margin-top: 1rem;
+    text-align: center;
 }
 
 .error-actions .button:hover {
