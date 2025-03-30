@@ -21,7 +21,7 @@
 
 <body>
     <?php include 'header.inc'; ?>
-    
+    <hr>
     <main class="enhancement-documentation">
         <h1>PHP Enhancement: EOI Record Sorting</h1>
         
