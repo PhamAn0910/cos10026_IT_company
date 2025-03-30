@@ -71,11 +71,53 @@ function create_eoi_table($conn) {
     }
 }
 
+// Basic sanitization function
 function sanitize_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
     return $data;
+}
+
+// Enhanced error handling
+function handle_database_error($error, $context = '') {
+    error_log("Database error in $context: " . $error);
+    return "A database error occurred. Please try again later.";
+}
+
+// Enhanced database operations with prepared statements
+function insert_eoi($conn, $data) {
+    $query = "INSERT INTO eoi (job_reference, first_name, last_name, date_of_birth, 
+              gender, street_address, suburb, state, postcode, email, phone, 
+              skills, other_skills, status) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')";
+              
+    $stmt = $conn->prepare($query);
+    if (!$stmt) {
+        throw new Exception(handle_database_error($conn->error, 'prepare statement'));
+    }
+    
+    $stmt->bind_param("sssssssssssss", 
+        $data['job_reference'], 
+        $data['first_name'],
+        $data['last_name'],
+        $data['dob'],
+        $data['gender'],
+        $data['street_address'],
+        $data['suburb'],
+        $data['state'],
+        $data['postcode'],
+        $data['email'],
+        $data['phone'],
+        $data['skills'],
+        $data['other_skills']
+    );
+    
+    if (!$stmt->execute()) {
+        throw new Exception(handle_database_error($stmt->error, 'execute statement'));
+    }
+    
+    return $stmt->insert_id;
 }
 
 // 4. Validation functions - grouped by type
@@ -268,11 +310,11 @@ function display_success($eoiNumber, $jobRef, $firstName, $lastName) {
     echo "<html lang='en'>";
     echo "<head>";
     echo "  <meta charset='UTF-8'>";
-    echo "  <meta name='description'  content='IT Company - Apply Form Expression of Interest'>";
-    echo "  <meta name='keywords'     content='HTML5, CSS'>";
-    echo "  <meta name='author'       content='Le Ngoc Quynh Trang, Pham Truong Que An'>";
-    echo "  <meta name='viewport'     content='width=device-width, initial-scale=1.0'>";
-    echo "  <title>SonixWave | Application Submission Error Page</title>";
+    echo "  <meta name='description' content='IT Company - Apply Form Expression of Interest'>";
+    echo "  <meta name='keywords' content='HTML5, CSS'>";
+    echo "  <meta name='author' content='Le Ngoc Quynh Trang, Pham Truong Que An'>";
+    echo "  <meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+    echo "  <title>SonixWave | Application Submitted</title>";
     echo "  <link rel='stylesheet' href='styles/style.css'>";
     echo "  <link rel='stylesheet' href='styles/responsive-nav.css'>";
     echo "  <script src='scripts/nav-toggle.js'></script>";
@@ -347,8 +389,8 @@ try {
     }
     $skills = implode(", ", $skillsArray);
     
-    $otherSkillsChecked = isset($_POST["other-skills"]);
-    $otherSkills = $otherSkillsChecked ? sanitize_input($_POST["other-skills-text"]) : "";
+    $otherSkillsChecked = isset($_POST["other_skills"]);
+    $otherSkills = $otherSkillsChecked ? sanitize_input($_POST["other_skills_text"]) : "";
 
     // 9. Validate all inputs
     $validationErrors = [];
@@ -396,28 +438,23 @@ try {
             $mysqlDate = "{$dateParts[2]}-{$dateParts[1]}-{$dateParts[0]}";
             
             // Prepare and execute insert statement with error handling
-            $insertSQL = $conn->prepare("INSERT INTO eoi (
-                job_reference, first_name, last_name, date_of_birth, gender,
-                street_address, suburb, state, postcode, email, phone,
-                skills, other_skills, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')");
+            $data = [
+                'job_reference' => $jobRef,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'dob' => $mysqlDate,
+                'gender' => $gender,
+                'street_address' => $streetAddress,
+                'suburb' => $suburb,
+                'state' => $state,
+                'postcode' => $postcode,
+                'email' => $email,
+                'phone' => $phone,
+                'skills' => $skills,
+                'other_skills' => $otherSkills
+            ];
             
-            if (!$insertSQL) {
-                throw new Exception("Prepare failed: " . $conn->error);
-            }
-            
-            $insertSQL->bind_param("sssssssssssss",
-                $jobRef, $firstName, $lastName, $mysqlDate, $gender,
-                $streetAddress, $suburb, $state, $postcode, $email, $phone,
-                $skills, $otherSkills
-            );
-            
-            if (!$insertSQL->execute()) {
-                throw new Exception("Error saving application: " . $insertSQL->error);
-            }
-            
-            $eoiNumber = $insertSQL->insert_id;
-            $insertSQL->close();
+            $eoiNumber = insert_eoi($conn, $data);
             $conn->close();
             
             display_success($eoiNumber, $jobRef, $firstName, $lastName);
