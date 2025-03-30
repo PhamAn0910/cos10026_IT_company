@@ -39,35 +39,34 @@
             <h2>Implementation Details</h2>
             <h3>Code Snippet</h3>
             <pre><code>
-
 function get_sort_clause() {
-    $valid_fields = [
-        'EOInumber', 'job_reference', 'first_name', 
-        'last_name', 'date_of_birth', 'status'
-    ];
+  $valid_fields = [
+    'EOInumber', 'job_reference', 'first_name', 
+    'last_name', 'date_of_birth', 'status'
+  ];
     
-    $sort_field = isset($_POST['sort_field']) ? 
-        sanitize_input($_POST['sort_field']) : 'EOInumber';
-    $sort_order = isset($_POST['sort_order']) ? 
-        sanitize_input($_POST['sort_order']) : 'DESC';
-    
-        // Special handling for status field to sort in logical order (New, Current, Final)
-    if ($sort_field == 'status') {
-        if ($sort_order == 'ASC') {
-            return " ORDER BY CASE status 
-                      WHEN 'New' THEN 1 
-                      WHEN 'Current' THEN 2 
-                      WHEN 'Final' THEN 3 
-                      ELSE 4 END";
-        } else { // DESC
-            return " ORDER BY CASE status 
-                      WHEN 'Final' THEN 1 
-                      WHEN 'Current' THEN 2 
-                      WHEN 'New' THEN 3 
-                      ELSE 4 END";
-        }
+$sort_field = isset($_POST['sort_field']) ? 
+  sanitize_input($_POST['sort_field']) : 'EOInumber';
+$sort_order = isset($_POST['sort_order']) ? 
+  sanitize_input($_POST['sort_order']) : 'DESC';
+  
+  <span style="color: #3d1f15; font-style: italic; font-weight: bold;">// Special handling for status field to sort 
+    in logical order (New, Current, Final)</span>
+  if ($sort_field == 'status') {
+    if ($sort_order == 'ASC') {
+      return " ORDER BY CASE status 
+              WHEN 'New' THEN 1 
+              WHEN 'Current' THEN 2 
+              WHEN 'Final' THEN 3 
+              ELSE 4 END";
+    } else { // DESC
+      return " ORDER BY CASE status 
+              WHEN 'Final' THEN 1 
+              WHEN 'Current' THEN 2 
+              WHEN 'New' THEN 3 
+              ELSE 4 END";
     }
-    
+  } 
     return " ORDER BY $sort_field $sort_order";
 }
             </code></pre>
