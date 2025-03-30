@@ -11,29 +11,68 @@
  
  // Function to display results in a table
  function display_results($result) {
-     if ($result && mysqli_num_rows($result) > 0) {
-         echo "<table class='results-table'>";
-         echo "<tr><th>EOI Number</th><th>Job Ref</th><th>Name</th><th>DOB</th><th>Gender</th><th>Address</th><th>Email</th><th>Phone</th><th>Skills</th><th>Status</th><th>Date</th></tr>";
-         while ($row = mysqli_fetch_assoc($result)) {
-             echo "<tr>";
-             echo "<td>" . htmlspecialchars($row['EOInumber']) . "</td>";
-             echo "<td>" . htmlspecialchars($row['job_reference']) . "</td>";
-             echo "<td>" . htmlspecialchars($row['first_name'] . " " . $row['last_name']) . "</td>";
-             echo "<td>" . htmlspecialchars($row['date_of_birth']) . "</td>";
-             echo "<td>" . htmlspecialchars($row['gender']) . "</td>";
-             echo "<td>" . htmlspecialchars($row['street_address'] . ", " . $row['suburb'] . ", " . $row['state'] . " " . $row['postcode']) . "</td>";
-             echo "<td>" . htmlspecialchars($row['email']) . "</td>";
-             echo "<td>" . htmlspecialchars($row['phone']) . "</td>";
-             echo "<td>" . htmlspecialchars($row['skills'] . ($row['other_skills'] ? ", " . $row['other_skills'] : "")) . "</td>";
-             echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-             echo "<td>" . htmlspecialchars($row['application_date']) . "</td>";
-             echo "</tr>";
-         }
-         echo "</table>";
-     } else {
-         echo "<p>No results found.</p>";
-     }
+    if ($result && mysqli_num_rows($result) > 0) {
+        echo "<table class='results-table' id='resultsTable'>";
+        echo "<tr><th>EOI Number</th><th>Job Ref</th><th>Name</th><th>DOB</th><th>Gender</th><th>Address</th><th>Email</th><th>Phone</th><th>Skills</th><th>Status</th><th>Date</th></tr>";
+        
+        $row_count = mysqli_num_rows($result);
+        $initial_rows = 3; // Number of rows to show initially
+        $row_index = 0;
+        
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Determine if this row should be initially visible or hidden
+            $class = ($row_index < $initial_rows) ? "" : "hidden-row";
+            
+            echo "<tr class='$class'>";
+            echo "<td>" . htmlspecialchars($row['EOInumber']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['job_reference']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['first_name'] . " " . $row['last_name']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['date_of_birth']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['gender']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['street_address'] . ", " . $row['suburb'] . ", " . $row['state'] . " " . $row['postcode']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['email']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['phone']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['skills'] . ($row['other_skills'] ? ", " . $row['other_skills'] : "")) . "</td>";
+            echo "<td>" . htmlspecialchars($row['status']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['application_date']) . "</td>";
+            echo "</tr>";
+            
+            $row_index++;
+        }
+        
+        echo "</table>";
+        
+        // Only show the "See More" button if there are more rows than the initial display
+        if ($row_count > $initial_rows) {
+            echo "<div class='see-more-container'>";
+            echo "<a href='#' id='seeMoreButton' class='see-more-button'>More results</a>";
+            echo "</div>";
+            
+            // Add JavaScript for toggling visibility
+            echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const seeMoreButton = document.getElementById('seeMoreButton');
+                    const hiddenRows = document.querySelectorAll('.hidden-row');
+                    let expanded = false;
+                    
+                    seeMoreButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        expanded = !expanded;
+                        
+                        hiddenRows.forEach(row => {
+                            row.style.display = expanded ? 'table-row' : 'none';
+                        });
+                        
+                        this.textContent = expanded ? 'Show less' : 'More results';
+                    });
+                });
+            </script>";
+        }
+    } else {
+        echo "<p>No results found.</p>";
+    }
  }
+
  
  // Get the sorting field and order
  function get_sort_clause() {
