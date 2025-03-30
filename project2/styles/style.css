@@ -1104,8 +1104,41 @@ font-family: var(--font-serif);
 font-weight: 100;
 text-align: center;
 }
+/* Make the results table responsive */
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    display: block; /* Important for the overflow to work */
+    border-right: 1px solid #ddd;
+}
 
-/* Application Response Pages */
+/* For larger screens, we can use a container with overflow */
+@media (max-width: 1200px) {
+    .results-table {
+        font-size: 14px; /* Slightly smaller font on medium screens */
+    }
+    
+    /* Create a scrollable container for the table */
+    #results-container {
+        overflow-x: auto;
+        width: 100%;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 600px) {
+    .results-table {
+        font-size: 12px; /* Even smaller font on small screens */
+    }
+    
+    .results-table th, .results-table td {
+        padding: 5px; /* Reduce padding on small screens */
+    }
+}
+
+/* APPLICATION RESPONSE PAGES */
 .success-container, .error-container {
     max-width: 80%;
     margin: 4em auto;
@@ -1129,7 +1162,7 @@ text-align: center;
     color: var(--text-color);
 }
 
-/* Success Page Specific Styles */
+/* SUCCESS PAGE SPECIFIC STYLES */
 .application-details, .next-steps {
     background-color: #f9f9f9;
     border-radius: 12px;
@@ -1209,7 +1242,7 @@ text-align: center;
     transform: scale(1.05);
 }
 
-/* Error Page Specific Styles */
+/* ERROR PAGE SPECIFIC STYLES */
 .error-list {
     background-color: #fff0f3;
     border-left: 4px solid var(--pink);
@@ -1278,7 +1311,7 @@ text-align: center;
     }
 }
 
-/* PHP Enhancement Page Styles */
+/* PHP ENHANCEMENT */
 .enhancement-documentation {
     max-width: 80%;
     margin: 4em auto;
