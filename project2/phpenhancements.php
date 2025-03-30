@@ -23,7 +23,7 @@
     <?php include 'header.inc'; ?>
     
     <main class="enhancement-documentation">
-        <h1>PHP Enhancement: <span>EOI Record Sorting</span></h1>
+        <h1>PHP Enhancement: EOI Record Sorting</h1>
         
         <section class="enhancement-description">
             <h2>Description</h2>
