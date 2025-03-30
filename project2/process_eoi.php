@@ -251,12 +251,19 @@ function validate_job_reference($jobRef) {
 }
 
 function validate_skills($skillsArray, $otherSkills, $otherSkillsChecked) {
+    // Check if no skills are selected at all
     if (empty($skillsArray) && !$otherSkillsChecked) {
         return "Please select at least one skill.";
     }
     
+    // Check if "Other Skills" is checked but text area is empty
     if ($otherSkillsChecked && empty($otherSkills)) {
         return "Please specify your other skills or uncheck the option.";
+    }
+
+    // Check if text is entered in "Other Skills" but checkbox is not checked
+    if (!$otherSkillsChecked && !empty($otherSkills)) {
+        return "Please check the 'Other Skills' checkbox if you want to specify additional skills.";
     }
     
     return "";
@@ -393,7 +400,7 @@ try {
     $skills = implode(", ", $skillsArray);
     
     $otherSkillsChecked = isset($_POST["other_skills"]);
-    $otherSkills = $otherSkillsChecked ? sanitize_input($_POST["other_skills_text"]) : "";
+    $otherSkills = isset($_POST["other_skills_text"]) ? sanitize_input($_POST["other_skills_text"]) : "";
 
     // 9. Validate all inputs
     $validationErrors = [];
