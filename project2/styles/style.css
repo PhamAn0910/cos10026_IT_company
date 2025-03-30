@@ -975,7 +975,8 @@ dd span {
 
 .enhancement-button-container {
     text-align: center;
-    margin: 40px 0;
+    margin: 40px auto;
+    max-width: 220px;
 }
 
 .enhancement-button {
