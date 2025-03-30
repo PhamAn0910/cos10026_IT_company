@@ -1104,26 +1104,55 @@ font-family: var(--font-serif);
 font-weight: 100;
 text-align: center;
 }
+
 /* Make the results table responsive */
 .results-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    overflow-x: auto; /* Enable horizontal scrolling */
-    display: block; /* Important for the overflow to work */
     border-right: 1px solid #ddd;
 }
 
-/* For larger screens, we can use a container with overflow */
+/* Container for horizontal scrolling */
+#results-container {
+    overflow-x: auto;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Style for table rows that are initially hidden */
+.results-table tr.hidden-row {
+    display: none;
+}
+
+/* Style for the "See More" button container */
+.see-more-container {
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Style for the "See More" button */
+.see-more-button {
+    background-color: var(--dark-green);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    display: inline-block;
+    text-decoration: none;
+}
+
+.see-more-button:hover {
+    background-color: var(--pink); /* Darker shade on hover */
+}
+
+/* For larger screens */
 @media (max-width: 1200px) {
     .results-table {
         font-size: 14px; /* Slightly smaller font on medium screens */
-    }
-    
-    /* Create a scrollable container for the table */
-    #results-container {
-        overflow-x: auto;
-        width: 100%;
     }
 }
 
