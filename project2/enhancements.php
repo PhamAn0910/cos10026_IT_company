@@ -139,6 +139,11 @@
     </section>
   </div>
 
+  <!-- Link to PHP enhancements page -->
+  <div class="enhancement-button-container">
+    <a href="phpenhancements.php" class="enhancement-button">View PHP Enhancements &rarr;</a> <!-- &rarr; is a right arrow symbol -->
+  </div>
+
   <!-- Footer -->
   <?php include 'footer.inc'; ?>
 
