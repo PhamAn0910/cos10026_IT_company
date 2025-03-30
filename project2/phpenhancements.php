@@ -95,7 +95,7 @@ function get_sort_clause() {
 
     <!-- Link to PHP enhancements page -->
     <div class="enhancement-button-container">
-        <a href="javascript:history.back()" class="enhancement-button">&larr; View HTML &amp; CSS Enhancements</a> <!-- &larr; is a left arrow symbol -->
+        <a href="enhancements.php" class="enhancement-button">&larr; View HTML &amp; CSS Enhancements</a> <!-- &larr; is a left arrow symbol -->
     </div>
 
     <?php include 'footer.inc'; ?>

@@ -1365,8 +1365,14 @@ text-align: center;
 .enhancement-documentation h1 {
     color: var(--dark-brown);
     font-family: var(--font-serif);
-    margin: 2rem 2%;
-    font-size: 1.9rem !important;
+    margin: 1.5rem 2% 3rem 2%;
+    font-size: 2.5rem;
+}
+
+@media (max-width: 430px) {
+    .enhancement-documentation h1 {
+        font-size: 1.9rem !important;
+    }
 }
 
 .enhancement-documentation h2 {

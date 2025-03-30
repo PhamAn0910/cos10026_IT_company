@@ -357,7 +357,7 @@ function display_success($eoiNumber, $jobRef, $firstName, $lastName) {
     echo "</div>";
     echo "<div class='action-links'>";
     echo '<p><a href="index.php" class="button">&larr; Back to Homepage</a></p>'; //&larr; = left arrow
-    echo '<p><a href="jobs.php" class="link">Explore More Job &rarr;</a></p>'; //&rarr; = right arrow
+    echo '<p><a href="jobs.php" class="link">Explore More Jobs &rarr;</a></p>'; //&rarr; = right arrow
     echo "</div>";
     echo '</div>';
     echo '</div>';
