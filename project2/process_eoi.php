@@ -306,7 +306,7 @@ function display_error($errors) {
     echo '<li>Click the Back button below to return to the form</li>';
     echo '<li>Correct the information and submit again</li>';
     echo '</ul>';
-    echo '<p><a href="javascript:history.back()" class="button">← Back to Application Form</a></p>';
+    echo '<p><a href="javascript:history.back()" class="button">&larr; Back to Application Form</a></p>'; // &larr; = left arrow
     echo '</div>';
     echo '</div>';
     echo '</div>';
@@ -356,8 +356,8 @@ function display_success($eoiNumber, $jobRef, $firstName, $lastName) {
     echo "</ol>";
     echo "</div>";
     echo "<div class='action-links'>";
-    echo '<p><a href="index.php" class="button">Return to Home Page</a></p>';
-    echo '<p><a href="jobs.php" class="link">View More Job Opportunities</a></p>';
+    echo '<p><a href="index.php" class="button">&larr; Back to Homepage</a></p>'; //&larr; = left arrow
+    echo '<p><a href="jobs.php" class="link">Explore More Job &rarr;</a></p>'; //&rarr; = right arrow
     echo "</div>";
     echo '</div>';
     echo '</div>';
