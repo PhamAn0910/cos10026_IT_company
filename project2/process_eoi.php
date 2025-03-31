@@ -153,15 +153,14 @@ function validate_date($date) {
     
     $dob = DateTime::createFromFormat('Y-m-d', $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0]);
     $today = new DateTime();
-    $age = $today->diff($dob)->y;
+    $age = date_diff($today, $dob)->y;
     
-    if ($age < MIN_AGE) {
-        return "You must be at least " . MIN_AGE . " years old to apply.";
+    if ($age < 15 && $age != 15) {
+        return "You must be at least " . MIN_AGE . " years old to apply for this position.";
     }
-    if ($age > MAX_AGE) {
-        return "Age cannot exceed " . MAX_AGE . " years.";
+    if ($age > 80 && $age != 80) {
+        return "Age cannot exceed " . MAX_AGE . " years to apply for this position.";
     }
-    
     return "";
 }
 
