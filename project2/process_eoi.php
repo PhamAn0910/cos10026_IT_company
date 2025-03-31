@@ -155,10 +155,10 @@ function validate_date($date) {
     $today = new DateTime();
     $age = date_diff($today, $dob)->y;
     
-    if ($age < 15 && $age != 15) {
+    if ($age < MIN_AGE && $age != MIN_AGE) {
         return "You must be at least " . MIN_AGE . " years old to apply for this position.";
     }
-    if ($age > 80 && $age != 80) {
+    if ($age > MAX_AGE && $age != MAX_AGE) {
         return "Age cannot exceed " . MAX_AGE . " years to apply for this position.";
     }
     return "";
@@ -208,7 +208,7 @@ function validate_state_postcode($state, $postcode) {
     }
     
     if (!preg_match("/^\d{" . MAX_POSTCODE_LENGTH . "}$/", $postcode)) {
-        return "Postcode must be exactly 4 digits.";
+        return "Postcode must be exactly " . MAX_POSTCODE_LENGTH . " digits.";
     }
     
     if (!preg_match($state_postcodes[$state]['pattern'], $postcode)) {
