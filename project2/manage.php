@@ -25,7 +25,7 @@
             
             // Convert date format for MySQL
             $dateParts = explode('-', $row['date_of_birth']);
-            $dob = "{$dateParts[2]}-{$dateParts[1]}-{$dateParts[0]}";
+            $dob = "{$dateParts[2]}/{$dateParts[1]}/{$dateParts[0]}";
 
             echo "<tr class='$class'>";
             echo "<td>" . htmlspecialchars($row['EOInumber']) . "</td>";
