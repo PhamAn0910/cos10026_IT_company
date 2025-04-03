@@ -8,8 +8,6 @@
 // 1. Initialize required resources
 require_once("settings.php");
 session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 // 2. Define validation constants
 define('MIN_AGE', 15);
@@ -22,7 +20,7 @@ define('MAX_NAME_LENGTH', 20);
 define('MIN_PHONE_LENGTH', 8);
 define('MAX_PHONE_LENGTH', 12);
 
-// 3. Helper functions
+// 3. Database functions
 /**
  * Create database connection with error handling
  * @return mysqli Database connection object
@@ -50,7 +48,7 @@ function create_database_connection() {
  */
 function create_eoi_table($conn) {
     $query = "CREATE TABLE IF NOT EXISTS eoi (
-        eoi_id INT AUTO_INCREMENT PRIMARY KEY,
+        EOInumber INT AUTO_INCREMENT PRIMARY KEY,
         job_reference VARCHAR(5) NOT NULL,
         first_name VARCHAR(20) NOT NULL,
         last_name VARCHAR(20) NOT NULL,
@@ -65,7 +63,7 @@ function create_eoi_table($conn) {
         skills TEXT NOT NULL,
         other_skills TEXT,
         status VARCHAR(20) DEFAULT 'New' NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        application_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     
     if (!$conn->query($query)) {
@@ -74,26 +72,185 @@ function create_eoi_table($conn) {
     }
 }
 
-// Basic sanitization function
-function sanitize_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
+/** 
+ * Function to check for duplicate application entries
+ * This function checks if an application already exists in the database
+ * If these applications already exist and are in 'New' status, they can be updated.
+ */
+function check_duplicate_application($conn, $data) {
+    // Check for exact duplicate in any status
+    $query = "SELECT EOInumber, status FROM eoi WHERE ( 
+            (job_reference = ? AND (email = ? OR phone = ?)) AND
+            (job_reference = ? AND first_name = ? AND last_name = ? 
+            AND gender = ? AND date_of_birth = ? AND
+            street_address = ? AND suburb = ? AND
+            state = ? AND postcode = ? AND
+            skills = ? AND other_skills = ?)
+            )";
+              
+    $stmt = $conn->prepare($query);
+    if (!$stmt) {
+        throw new Exception(handle_database_error($conn->error, 'prepare exact duplicate check'));
+    }
+    
+    // Mismatch in bind_param & parameters of the SQL query make the duplicate check fail 
+    // and return false -> the code will try to insert a new record 
+    // but also fail due to database constraints
+    $stmt->bind_param("ssssssssssssss", 
+        $data['job_reference'], $data['email'], $data['phone'],
+        $data['job_reference'], $data['first_name'], $data['last_name'],
+        $data['gender'], $data['date_of_birth'],
+        $data['street_address'], $data['suburb'], $data['state'], $data['postcode'],
+        $data['skills'], $data['other_skills']
+    );
+    
+    if (!$stmt->execute()) {
+        throw new Exception(handle_database_error($stmt->error, 'execute exact duplicate check'));
+    }
+    
+    $result = $stmt->get_result();
+    $stmt->close();
+    
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if ($row['status'] !== 'New') {
+            // Block submission if the status is not 'New'
+            throw new Exception("Unable to submit application since a similar application is already being processed.1");
+        } 
+        // Allow updating the existing entry
+        return ['EOInumber' => $row['EOInumber'], 'status' => $row['status']];
+    }
+
+    // Similarity check for attempting to update non-New status applications
+    $query = "SELECT EOInumber, status FROM eoi WHERE 
+        job_reference = ? AND phone = ? AND email = ? AND (
+        date_of_birth = ? OR gender = ? 
+        OR (skills = ? AND other_skills = ?)  
+        OR (last_name = ? AND first_name = ?) 
+        street_address = ? OR suburb = ?
+    )";
+
+    $stmt = $conn->prepare($query);
+    if (!$stmt) {
+    throw new Exception(handle_database_error($conn->error, 'prepare similar record check'));
+    }
+
+    $stmt->bind_param("sssssssssss",
+        $data['job_reference'], $data['phone'], $data['email'],
+        $data['date_of_birth'], $data['gender'],
+        $data['skills'], $data['other_skills'],
+        $data['last_name'], $data['first_name'],
+        $data['street_address'], $data['suburb']
+    );
+
+    if (!$stmt->execute()) {
+    throw new Exception(handle_database_error($stmt->error, 'execute similar record check'));
+    }
+
+    $result = $stmt->get_result();
+    $stmt->close();
+
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        // Detect an application in non-New status is being try to update.
+        if ($row['status'] !== 'New') {
+            throw new Exception("No changes were made to your application. It may be locked or in processing.");
+        } 
+        // Allow updating the existing entry
+        return ['EOInumber' => $row['EOInumber'], 'status' => $row['status']];
+    }
+
+    return false; // No duplicate found -> create new record 
 }
 
-// Enhanced error handling
-function handle_database_error($error, $context = '') {
-    error_log("Database error in $context: " . $error);
-    return "A database error occurred. Please try again later.";
+/**
+ * Function to update existing EOI entry
+ * This function updates an existing EOI entry in the database
+ */
+function update_eoi($conn, $data, $existingEOI) {
+    // First check if the EOI exists and its status
+    $checkQuery = "SELECT status FROM eoi WHERE EOInumber = ?";
+    
+    $checkStmt = $conn->prepare($checkQuery);
+    if (!$checkStmt) {
+        throw new Exception(handle_database_error($conn->error, 'prepare check status'));
+    }
+    
+    $checkStmt->bind_param("i", $existingEOI['EOInumber']);
+    
+    if (!$checkStmt->execute()) {
+        throw new Exception(handle_database_error($checkStmt->error, 'execute check status'));
+    }
+    
+    $result = $checkStmt->get_result();
+    $row = $result->fetch_assoc();
+    $checkStmt->close();
+    
+    // If EOI doesn't exist or status isn't 'New', throw exception
+    if (!$result || $result->num_rows === 0) {
+        throw new Exception("No changes were made to your application. It may be locked or in processing.");
+    }
+
+    // If status is 'New', proceed with update
+    $query = "UPDATE eoi SET 
+              job_reference = ?,
+              first_name = ?,
+              last_name = ?,
+              gender = ?,
+              date_of_birth = ?,
+              street_address = ?,
+              suburb = ?, 
+              state = ?,
+              postcode = ?,
+              phone = ?, 
+              email = ?,
+              skills = ?, 
+              other_skills = ?
+              WHERE EOInumber = ? AND status = 'New'";
+
+    $stmt = $conn->prepare($query);
+    if (!$stmt) {
+        throw new Exception(handle_database_error($conn->error, 'prepare update'));
+    }
+    
+    $stmt->bind_param("sssssssssssssi",
+        $data['job_reference'],
+        $data['first_name'],
+        $data['last_name'],
+        $data['gender'],
+        $data['date_of_birth'],
+        $data['street_address'],
+        $data['suburb'],
+        $data['state'],
+        $data['postcode'],
+        $data['phone'],
+        $data['email'],
+        $data['skills'],
+        $data['other_skills'],
+        $existingEOI['EOInumber']
+    );
+    
+    if (!$stmt->execute()) {
+        throw new Exception(handle_database_error($stmt->error, 'execute update'));
+    }
+
+    $affected = $stmt->affected_rows;
+    $stmt->close();
+
+    if ($affected === 0 && $data['status'] !== 'New') {
+        throw new Exception("No changes were made to your application. It may be locked or in processing.");
+    }
+
+    return $existingEOI['EOInumber'];
 }
 
-// Enhanced database operations with prepared statements
+// Insert database operations with prepared statements
 function insert_eoi($conn, $data) {
-    $query = "INSERT INTO eoi (job_reference, first_name, last_name, date_of_birth, 
-              gender, street_address, suburb, state, postcode, email, phone, 
-              skills, other_skills, status) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')";
+    $query = "INSERT INTO eoi (
+        job_reference, first_name, last_name, date_of_birth, 
+        gender, street_address, suburb, state, postcode, 
+        email, phone, skills, other_skills, status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')";
               
     $stmt = $conn->prepare($query);
     if (!$stmt) {
@@ -104,7 +261,7 @@ function insert_eoi($conn, $data) {
         $data['job_reference'], 
         $data['first_name'],
         $data['last_name'],
-        $data['dob'],
+        $data['date_of_birth'], // now in MySQL date format by converting to $date_of_birth
         $data['gender'],
         $data['street_address'],
         $data['suburb'],
@@ -120,7 +277,23 @@ function insert_eoi($conn, $data) {
         throw new Exception(handle_database_error($stmt->error, 'execute statement'));
     }
     
-    return $stmt->insert_id;
+    $id = $stmt->insert_id;
+    $stmt->close();
+    return $id;
+}
+
+// Basic sanitization function
+function sanitize_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+// Enhanced error handling
+function handle_database_error($error, $context = '') {
+    error_log("Database error in $context: " . $error);
+    return "A database error occurred. Please try again later.";
 }
 
 // 4. Validation functions - grouped by type
@@ -141,7 +314,7 @@ function validate_date($date) {
     }
     
     // Check format dd/mm/yyyy
-    if (!preg_match("/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19[4-9][0-9]|20[0-1][0-9])$/", $date)) {
+    if (!preg_match("/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/", $date)) {
         return "Date must be in dd/mm/yyyy format (e.g., 25/04/2000).";
     }
     
@@ -155,11 +328,19 @@ function validate_date($date) {
     $today = new DateTime();
     $age = date_diff($today, $dob)->y;
     
-    if ($age < MIN_AGE && $age != MIN_AGE) {
+    if ($age < MIN_AGE && $age !== MIN_AGE) {
         return "You must be at least " . MIN_AGE . " years old to apply for this position.";
     }
-    if ($age > MAX_AGE && $age != MAX_AGE) {
+    if ($age > MAX_AGE && $age !== MAX_AGE) {
         return "Age cannot exceed " . MAX_AGE . " years to apply for this position.";
+    }
+    
+    return "";
+}
+
+function validate_gender($gender) {
+    if (empty($gender)) {
+        return "You must select at least a Gender option.";
     }
     return "";
 }
@@ -235,7 +416,7 @@ function validate_phone($phone) {
     }
     $phoneClean = str_replace(' ', '', $phone);
     if (!preg_match("/^\d{" . MIN_PHONE_LENGTH . "," . MAX_PHONE_LENGTH . "}$/", $phoneClean)) {
-        return "Phone number must contain between " . MIN_PHONE_LENGTH . " and " . MAX_PHONE_LENGTH . " digits (spaces allowed).";
+        return "Phone numbers can only contain between " . MIN_PHONE_LENGTH . " and " . MAX_PHONE_LENGTH . " digits including spaces.";
     }
     return "";
 }
@@ -290,31 +471,31 @@ function display_error($errors) {
     echo "<body>";
     require_once("header.inc");
     echo '<div class="error-container">';
-    echo '<h2>Application Submission Error</h2>';
-    echo '<div class="error-message">';
-    echo '<p>We cannot process your application due to the following issues:</p>';
-    echo '<ul class="error-list">';
-    foreach ($errors as $error) {
-        echo "<li>" . htmlspecialchars($error) . "</li>";
-    }
-    echo '</ul>';
-    echo '<div class="error-actions">';
-    echo '<p>Please:</p>';
-    echo '<ul>';
-    echo '<li>Review the errors listed above</li>';
-    echo '<li>Click the Back button below to return to the form</li>';
-    echo '<li>Correct the information and submit again</li>';
-    echo '</ul>';
-    echo '<a href="javascript:history.back()" class="button">Return Back</a>'; // &larr; = left arrow
-    echo '</div>';
-    echo '</div>';
+        echo '<h2>Application Submission Error</h2>';
+        echo '<div class="error-message">';
+            echo '<p>We cannot process your application due to the following issues:</p>';
+            echo '<ul class="error-list">';
+                foreach ($errors as $error) {
+                echo "<li>" . htmlspecialchars($error) . "</li>";
+                }
+            echo '</ul>';
+        echo '<div class="error-actions">';
+            echo '<p>Please:</p>';
+            echo '<ul>';
+                echo '<li>Review the errors listed above</li>';
+                echo '<li>Click the Back button below to return to the form</li>';
+                echo '<li>Correct the information and submit again</li>';
+            echo '</ul>';
+            echo '<a href="javascript:history.back()" class="button">Return Back</a>'; // &larr; = left arrow
+        echo '</div>';
+        echo '</div>';
     echo '</div>';
     require_once("footer.inc");
     echo '</body>';
     echo '</html>';
 }
 
-function display_success($eoiNumber, $jobRef, $firstName, $lastName) {
+function display_success($eoiNumber, $jobRef, $firstName, $lastName, $isUpdate = false) {
     echo "<!DOCTYPE html>";
     echo "<html lang='en'>";
     echo "<head>";
@@ -334,8 +515,9 @@ function display_success($eoiNumber, $jobRef, $firstName, $lastName) {
     echo "</head>";
     echo "<body>";
     require_once("header.inc");
+
     echo '<div class="success-container">';
-        echo '<h2>Application Submitted Successfully</h2>';
+        echo '<h2>' . ($isUpdate ? 'Application Updated Successfully' : 'Application Submitted Successfully') . '</h2>';
         echo '<div class="confirmation-details">';
         echo "<p>Thank you for your application, " . htmlspecialchars($firstName . " " . $lastName) . "!</p>";
         echo "<p>Your Expression of Interest has been successfully received and recorded in our system.</p>";
@@ -383,7 +565,7 @@ try {
     $firstName = sanitize_input($_POST["first-name"]); 
     $lastName = sanitize_input($_POST["last-name"]); 
     $dob = sanitize_input($_POST["DOB"]);
-    $gender = sanitize_input($_POST["gender"]);
+    $gender = isset($_POST["gender"]) ? sanitize_input($_POST["gender"]) : "";
     $streetAddress = sanitize_input($_POST["street-address"]); 
     $suburb = sanitize_input($_POST["suburb"]);
     $state = sanitize_input($_POST["state"]);
@@ -417,6 +599,9 @@ try {
     $dobError = validate_date($dob);
     if ($dobError !== "") $validationErrors[] = $dobError;
 
+    $genderError = validate_gender($gender);
+    if ($genderError !== "") $validationErrors[] = $genderError;
+
     $addressError = validate_address($streetAddress);
     if ($addressError !== "") $validationErrors[] = $addressError;
 
@@ -439,19 +624,17 @@ try {
     if (empty($validationErrors)) {
         try {
             $conn = create_database_connection();
-            
             create_eoi_table($conn);
             
             // Convert date format for MySQL
             $dateParts = explode('/', $dob);
-            $mysqlDate = "{$dateParts[2]}-{$dateParts[1]}-{$dateParts[0]}";
+            $date_of_birth = "{$dateParts[2]}-{$dateParts[1]}-{$dateParts[0]}";
             
-            // Prepare and execute insert statement with error handling
             $data = [
                 'job_reference' => $jobRef,
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'dob' => $mysqlDate,
+                'date_of_birth' => $date_of_birth, // now in MySQL date format by converting to $date_of_birth
                 'gender' => $gender,
                 'street_address' => $streetAddress,
                 'suburb' => $suburb,
@@ -460,17 +643,36 @@ try {
                 'email' => $email,
                 'phone' => $phone,
                 'skills' => $skills,
-                'other_skills' => $otherSkills
+                'other_skills' => $otherSkills,
+                'status' => 'New'
             ];
-            
-            $eoiNumber = insert_eoi($conn, $data);
-            $conn->close();
-            
-            display_success($eoiNumber, $jobRef, $firstName, $lastName);
+                   
+            try {
+                // Check for duplicate before inserting
+                $existingEOI = check_duplicate_application($conn, $data);
+                // Update existing EOI if identical
+                if ($existingEOI !== false) {
+                    $eoiNumber = update_eoi($conn, $data, $existingEOI);
+                    // Pass true for update
+                    display_success($eoiNumber, $jobRef, $firstName, $lastName, true); 
+                } else {
+                    // Insert new record
+                    $eoiNumber = insert_eoi($conn, $data);
+                    // Pass false for new submission
+                    display_success($eoiNumber, $jobRef, $firstName, $lastName, false); 
+                }         
+                $conn->close();
+                
+            } catch (Exception $e) {
+                $conn->close();
+                // Display the actual error message from the duplicate check
+                display_error([$e->getMessage()]);
+                return;
+            }
             
         } catch (Exception $e) {
-            error_log("Database error: " . $e->getMessage());
-            throw new Exception("Unable to save your application. Please try again later.");
+            error_log("Database connection error: " . $e->getMessage());
+            display_error(["Unable to connect to the database. Please try again later."]);
         }
     } else {
         display_error($validationErrors);

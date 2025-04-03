@@ -23,16 +23,20 @@
             // Determine if this row should be initially visible or hidden
             $class = ($row_index < $initial_rows) ? "" : "hidden-row";
             
+            // Convert date format for MySQL
+            $dateParts = explode('-', $row['date_of_birth']);
+            $dob = "{$dateParts[2]}-{$dateParts[1]}-{$dateParts[0]}";
+
             echo "<tr class='$class'>";
             echo "<td>" . htmlspecialchars($row['EOInumber']) . "</td>";
             echo "<td>" . htmlspecialchars($row['job_reference']) . "</td>";
             echo "<td>" . htmlspecialchars($row['first_name'] . " " . $row['last_name']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['date_of_birth']) . "</td>";
+            echo "<td>" . htmlspecialchars($dob) . "</td>";
             echo "<td>" . htmlspecialchars($row['gender']) . "</td>";
             echo "<td>" . htmlspecialchars($row['street_address'] . ", " . $row['suburb'] . ", " . $row['state'] . " " . $row['postcode']) . "</td>";
             echo "<td>" . htmlspecialchars($row['email']) . "</td>";
             echo "<td>" . htmlspecialchars($row['phone']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['skills'] . ($row['other_skills'] ? ", " . $row['other_skills'] : "")) . "</td>";
+            echo "<td>" . $row['skills'] . ($row['other_skills'] ? ", " . $row['other_skills'] : "") . "</td>";
             echo "<td>" . htmlspecialchars($row['status']) . "</td>";
             echo "<td>" . htmlspecialchars($row['application_date']) . "</td>";
             echo "</tr>";
@@ -144,6 +148,7 @@
          <?php
          if ($_SERVER["REQUEST_METHOD"] == "POST") {
              echo '<div id="results-container" class="management-section">';
+
              $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
  
              if (!$conn) {
