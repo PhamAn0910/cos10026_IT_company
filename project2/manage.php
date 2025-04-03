@@ -25,7 +25,12 @@
             
             // Convert date format for MySQL
             $dateParts = explode('-', $row['date_of_birth']);
-            $dob = "{$dateParts[2]}/{$dateParts[1]}/{$dateParts[0]}";
+            $dob = $dateParts[2] . '/' . $dateParts[1] . '/' . $dateParts[0];
+
+            $application_date = explode(" ", $row['application_date']);
+            $date = explode('-', $application_date[0]);	
+            $time = explode(':', $application_date[1]);
+            $created_at = "$date[2]/$date[1]/$date[0] $time[0]:$time[1]:$time[2]";
 
             echo "<tr class='$class'>";
             echo "<td>" . htmlspecialchars($row['EOInumber']) . "</td>";
@@ -38,7 +43,7 @@
             echo "<td>" . htmlspecialchars($row['phone']) . "</td>";
             echo "<td>" . $row['skills'] . ($row['other_skills'] ? ", " . $row['other_skills'] : "") . "</td>";
             echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['application_date']) . "</td>";
+            echo "<td>" . $created_at . "</td>";
             echo "</tr>";
             
             $row_index++;
