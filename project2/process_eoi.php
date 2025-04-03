@@ -152,7 +152,7 @@ function check_duplicate_application($conn, $data) {
 
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        // Detect an application in non-New status is being try to update.
+        // Blocking the attemps of trying to update a non-New status application
         if ($row['status'] !== 'New') {
             throw new Exception("No changes were made to your application. It may be locked or in processing.");
         } 
@@ -168,7 +168,7 @@ function check_duplicate_application($conn, $data) {
  * This function updates an existing EOI entry in the database
  */
 function update_eoi($conn, $data, $existingEOI) {
-    // First check if the EOI exists and its status
+    // First check if there is existing EOI and its status
     $checkQuery = "SELECT status FROM eoi WHERE EOInumber = ?";
     
     $checkStmt = $conn->prepare($checkQuery);
@@ -186,26 +186,19 @@ function update_eoi($conn, $data, $existingEOI) {
     $row = $result->fetch_assoc();
     $checkStmt->close();
     
-    // If EOI doesn't exist or status isn't 'New', throw exception
+    // If EOI doesn't exist or $data['status'] = 0 ~ status isn't 'New'-> throw exception
     if (!$result || $result->num_rows === 0) {
         throw new Exception("No changes were made to your application. It may be locked or in processing.");
     }
 
     // If status is 'New', proceed with update
     $query = "UPDATE eoi SET 
-              job_reference = ?,
-              first_name = ?,
-              last_name = ?,
-              gender = ?,
-              date_of_birth = ?,
-              street_address = ?,
-              suburb = ?, 
-              state = ?,
-              postcode = ?,
-              phone = ?, 
-              email = ?,
-              skills = ?, 
-              other_skills = ?
+              job_reference = ?, first_name = ?, last_name = ?,
+              gender = ?, date_of_birth = ?,
+              street_address = ?, suburb = ?, 
+              state = ?, postcode = ?,
+              phone = ?, email = ?,
+              skills = ?, other_skills = ?
               WHERE EOInumber = ? AND status = 'New'";
 
     $stmt = $conn->prepare($query);
@@ -214,19 +207,11 @@ function update_eoi($conn, $data, $existingEOI) {
     }
     
     $stmt->bind_param("sssssssssssssi",
-        $data['job_reference'],
-        $data['first_name'],
-        $data['last_name'],
-        $data['gender'],
-        $data['date_of_birth'],
-        $data['street_address'],
-        $data['suburb'],
-        $data['state'],
-        $data['postcode'],
-        $data['phone'],
-        $data['email'],
-        $data['skills'],
-        $data['other_skills'],
+        $data['job_reference'], $data['first_name'], $data['last_name'],
+        $data['gender'], $data['date_of_birth'],
+        $data['street_address'], $data['suburb'], $data['state'], $data['postcode'],
+        $data['phone'], $data['email'],
+        $data['skills'], $data['other_skills'],
         $existingEOI['EOInumber']
     );
     
@@ -234,9 +219,12 @@ function update_eoi($conn, $data, $existingEOI) {
         throw new Exception(handle_database_error($stmt->error, 'execute update'));
     }
 
+    // Returns the number of rows affected by the previous MySQL operations: INSERT, UPDATE, REPLACE or DELETE query. 
+    // Works like mysqli_num_rows() for SELECT statements.
     $affected = $stmt->affected_rows;
     $stmt->close();
 
+    //Zero indicates that no records were updated for an UPDATE statement, no rows matched the WHERE clause in the query or that no query has yet been executed.
     if ($affected === 0 && $data['status'] !== 'New') {
         throw new Exception("No changes were made to your application. It may be locked or in processing.");
     }
@@ -247,9 +235,12 @@ function update_eoi($conn, $data, $existingEOI) {
 // Insert database operations with prepared statements
 function insert_eoi($conn, $data) {
     $query = "INSERT INTO eoi (
-        job_reference, first_name, last_name, date_of_birth, 
-        gender, street_address, suburb, state, postcode, 
-        email, phone, skills, other_skills, status
+        job_reference, first_name, last_name, 
+        gender, date_of_birth, 
+        street_address, suburb, state, postcode, 
+        email, phone, 
+        skills, other_skills, 
+        status
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New')";
               
     $stmt = $conn->prepare($query);
@@ -258,19 +249,11 @@ function insert_eoi($conn, $data) {
     }
     
     $stmt->bind_param("sssssssssssss", 
-        $data['job_reference'], 
-        $data['first_name'],
-        $data['last_name'],
-        $data['date_of_birth'], // now in MySQL date format by converting to $date_of_birth
-        $data['gender'],
-        $data['street_address'],
-        $data['suburb'],
-        $data['state'],
-        $data['postcode'],
-        $data['email'],
-        $data['phone'],
-        $data['skills'],
-        $data['other_skills']
+        $data['job_reference'], $data['first_name'], $data['last_name'],
+        $data['gender'], $data['date_of_birth'], // now in MySQL date format by converting to $date_of_birth
+        $data['street_address'], $data['suburb'], $data['state'], $data['postcode'],
+        $data['email'], $data['phone'],
+        $data['skills'], $data['other_skills']
     );
     
     if (!$stmt->execute()) {
@@ -315,7 +298,7 @@ function validate_date($date) {
     
     // Check format dd/mm/yyyy
     if (!preg_match("/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/", $date)) {
-        return "Date must be in dd/mm/yyyy format (e.g., 25/04/2000).";
+        return "Date must be in dd/mm/yyyy format (e.g., 31/03/2010).";
     }
     
     $dateParts = explode('/', $date);
@@ -500,10 +483,10 @@ function display_success($eoiNumber, $jobRef, $firstName, $lastName, $isUpdate =
     echo "<html lang='en'>";
     echo "<head>";
     echo "  <meta charset='UTF-8'>";
-    echo "  <meta name='description' content='IT Company - Apply Form Expression of Interest'>";
-    echo "  <meta name='keywords' content='HTML5, CSS'>";
-    echo "  <meta name='author' content='Le Ngoc Quynh Trang, Pham Truong Que An'>";
-    echo "  <meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+    echo "  <meta name='description'    content='IT Company - Apply Form Expression of Interest'>";
+    echo "  <meta name='keywords'       content='HTML5, CSS'>";
+    echo "  <meta name='author'         content='Le Ngoc Quynh Trang, Pham Truong Que An'>";
+    echo "  <meta name='viewport'       content='width=device-width, initial-scale=1.0'>";
     echo "  <title>SonixWave | Application Submitted</title>";
     echo "  <link rel='stylesheet' href='styles/style.css'>";
     echo "  <link rel='stylesheet' href='styles/responsive-nav.css'>";
@@ -634,7 +617,7 @@ try {
                 'job_reference' => $jobRef,
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'date_of_birth' => $date_of_birth, // now in MySQL date format by converting to $date_of_birth
+                'date_of_birth' => $date_of_birth, // must be in MySQL date format to insert into DBMS
                 'gender' => $gender,
                 'street_address' => $streetAddress,
                 'suburb' => $suburb,
