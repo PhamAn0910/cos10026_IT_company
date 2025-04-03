@@ -43,7 +43,7 @@
             echo "<td>" . htmlspecialchars($row['phone']) . "</td>";
             echo "<td>" . $row['skills'] . ($row['other_skills'] ? ", " . $row['other_skills'] : "") . "</td>";
             echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-            echo "<td>" . $created_at . "</td>";
+            echo "<td>" . htmlspecialchars($created_at) . "</td>";
             echo "</tr>";
             
             $row_index++;
