@@ -79,14 +79,15 @@ function create_eoi_table($conn) {
  */
 function check_duplicate_application($conn, $data) {
     // Check for exact duplicate in any status
-    $query = "SELECT EOInumber, status FROM eoi WHERE ( 
-            (job_reference = ? AND (email = ? OR phone = ?)) AND
-            (job_reference = ? AND first_name = ? AND last_name = ? 
-            AND gender = ? AND date_of_birth = ? AND
-            street_address = ? AND suburb = ? AND
-            state = ? AND postcode = ? AND
-            skills = ? AND other_skills = ?)
-            )";
+    $query = "SELECT EOInumber, status FROM eoi WHERE  
+              (job_reference = ? AND (email = ? OR phone = ?)) 
+              AND (
+                job_reference = ? AND first_name = ? AND last_name = ? 
+                AND gender = ? AND date_of_birth = ? 
+                AND street_address = ? AND suburb = ? 
+                AND state = ? AND postcode = ? 
+                AND skills = ? AND other_skills = ?
+              )";
               
     $stmt = $conn->prepare($query);
     if (!$stmt) {
@@ -123,12 +124,13 @@ function check_duplicate_application($conn, $data) {
 
     // Similarity check for attempting to update non-New status applications
     $query = "SELECT EOInumber, status FROM eoi WHERE 
-        job_reference = ? AND phone = ? AND email = ? AND (
-        date_of_birth = ? OR gender = ? 
-        OR (skills = ? AND other_skills = ?)  
-        OR (last_name = ? AND first_name = ?) 
-        street_address = ? OR suburb = ?
-    )";
+              (job_reference = ? AND (phone = ? OR email = ?)) 
+              AND (
+                date_of_birth = ? OR gender = ? 
+                OR (skills = ? AND other_skills = ?)  
+                OR (last_name = ? AND first_name = ?) 
+                OR street_address = ? OR suburb = ?
+            )";
 
     $stmt = $conn->prepare($query);
     if (!$stmt) {
