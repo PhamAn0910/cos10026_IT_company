@@ -185,7 +185,6 @@ function update_eoi($conn, $data, $existingEOI) {
     }
     
     $result = $checkStmt->get_result();
-    $row = $result->fetch_assoc();
     $checkStmt->close();
     
     // If EOI doesn't exist or $data['status'] = 0 ~ status isn't 'New'-> throw exception
@@ -232,6 +231,44 @@ function update_eoi($conn, $data, $existingEOI) {
     }
 
     return $existingEOI['EOInumber'];
+}
+
+// Function to display the Updated message where appropriate
+function check_if_updated($conn, $data, $existingEOI) {
+    $query = "SELECT * FROM eoi WHERE EOInumber = ?";
+    $stmt = $conn->prepare($query);
+    
+    if (!$stmt) {
+        throw new Exception(handle_database_error($conn->error, 'prepare check update'));
+    }
+    
+    $stmt->bind_param("i", $existingEOI['EOInumber']);
+    
+    if (!$stmt->execute()) {
+        throw new Exception(handle_database_error($stmt->error, 'execute check update'));
+    }
+    
+    $result = $stmt->get_result();
+    $existing = $result->fetch_assoc();
+    $stmt->close();
+
+    // Get the date in the same format for comparison
+    $existing_dob = date('Y-m-d', strtotime($existing['date_of_birth']));
+    
+    // Compare values BEFORE the update
+    return ($existing['job_reference'] != $data['job_reference'] ||
+            $existing['first_name'] != $data['first_name'] ||
+            $existing['last_name'] != $data['last_name'] ||
+            $existing_dob != $data['date_of_birth'] ||
+            $existing['gender'] != $data['gender'] ||
+            $existing['street_address'] != $data['street_address'] ||
+            $existing['suburb'] != $data['suburb'] ||
+            $existing['state'] != $data['state'] ||
+            $existing['postcode'] != $data['postcode'] ||
+            $existing['email'] != $data['email'] ||
+            $existing['phone'] != $data['phone'] ||
+            $existing['skills'] != $data['skills'] ||
+            $existing['other_skills'] != $data['other_skills']);
 }
 
 // Insert database operations with prepared statements
@@ -637,15 +674,17 @@ try {
                 $existingEOI = check_duplicate_application($conn, $data);
                 // Update existing EOI if identical
                 if ($existingEOI !== false) {
+                    // check_if_updated function must occur before the update occurs so that there can have difference in existing data and input data
+                    $wasUpdated = check_if_updated($conn, $data, $existingEOI);
                     $eoiNumber = update_eoi($conn, $data, $existingEOI);
-                    // Pass true for update
-                    display_success($eoiNumber, $jobRef, $firstName, $lastName, true); 
+                    // Pass $wasUpdated to $isUpdate if check_if_updated return output
+                    display_success($eoiNumber, $jobRef, $firstName, $lastName, $wasUpdated);
                 } else {
                     // Insert new record
                     $eoiNumber = insert_eoi($conn, $data);
-                    // Pass false for new submission
+                    // Pass false to $isUpdate for new submission
                     display_success($eoiNumber, $jobRef, $firstName, $lastName, false); 
-                }         
+                }              
                 $conn->close();
                 
             } catch (Exception $e) {
