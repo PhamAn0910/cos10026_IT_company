@@ -80,7 +80,7 @@ function create_eoi_table($conn) {
 function check_duplicate_application($conn, $data) {
     // Check for exact duplicate in any status
     $query = "SELECT EOInumber, status FROM eoi WHERE  
-              (job_reference = ? AND (email = ? OR phone = ?)) 
+              (job_reference = ? AND email = ? AND phone = ?) 
               AND (
                 job_reference = ? AND first_name = ? AND last_name = ? 
                 AND gender = ? AND date_of_birth = ? 
@@ -116,7 +116,7 @@ function check_duplicate_application($conn, $data) {
         $row = $result->fetch_assoc();
         if ($row['status'] !== 'New') {
             // Block submission if the status is not 'New'
-            throw new Exception("Unable to submit application since a similar application is already being processed.1");
+            throw new Exception("Unable to submit application since a same application is already being processed.");
         } 
         // Allow updating the existing entry
         return ['EOInumber' => $row['EOInumber'], 'status' => $row['status']];
