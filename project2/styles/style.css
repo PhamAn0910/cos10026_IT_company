@@ -907,7 +907,7 @@ dd span {
 /* ENHANCEMENT */
 .enhancements {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    grid-template-columns: minmax(290px, 1fr) minmax(290px, 1fr);
     gap: 35px;
     padding: 40px calc(2rem + (4 *((100vw - 60px) /60)));
     justify-content: center;
@@ -969,7 +969,13 @@ dd span {
 
 @media (min-width: 1020px) {
     .enhancements {
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        grid-template-columns: minmax(350px, 1fr) minmax(350px, 1fr);
+    }
+}
+
+@media (max-width:790px) {
+    .enhancements {
+        grid-template-columns: minmax(290px, 1fr);
     }
 }
 
