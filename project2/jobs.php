@@ -152,6 +152,13 @@
     mysqli_free_result($result);
   }
 
+  /**
+   * Main Function
+   * This function runs all the subroutines 
+   * including: create_database_connection(), 
+   * create jobs table and insert into jobs listing into it if it doesn't exist,
+   * and finally display_job()
+   */
   function main() {
     try {
       $dbconn = create_database_connection();
@@ -167,11 +174,57 @@
           array(
             'job_ref_num' => 'SE123',
             'position_title' => 'Data Analyst',
-            
+            'salary_range' => '$80,000 - $110,000 per annum',
+            'reports_to'=> 'Head of Data Science',
+            'job_description' => 'SonixWave is seeking a skilled Data Analyst to collect, analyze, and interpret user 
+                                  listening patterns to enhance personalized music recommendations. This role plays a 
+                                  crucial part in increasing user engagement by optimizing song and genre suggestions.',
+            'key_responsibilities' => '<li>Analyze large datasets of user listening behaviors to identify trends and patterns.</li>
+                                      <li>Develop and refine algorithms for personalized music recommendations.</li>
+                                      <li>Collaborate with software engineers and product managers to integrate data-driven insights into the platform.</li>
+                                      <li>Conduct A/B testing to measure the effectiveness of recommendation models.</li>
+                                      <li>Prepare and present data-driven reports to stakeholders.</li>
+                                      <li>Ensure data integrity and compliance with privacy regulations.</li>',
+            'qualifications_essential' => '<li>Bachelor&#39;s degree in Data Science, Statistics, Computer Science, or a related field.</li>
+                                          <li>Proficiency in SQL and Python/R for data analysis.</li>
+                                          <li>Strong experience with data visualization tools (e.g., Tableau, Power BI, Matplotlib).</li>
+                                          <li>Minimum 3 years of experience in data analytics, preferably in a music or media tech company.</li>
+                                          <li>Understanding of machine learning techniques related to recommendation systems.</li>
+                                          <li>Strong analytical and problem-solving skills.</li>',
+            'qualifications_preferable' => '<li>Master&#39;s degree in a related field.</li>
+                                            <li>Experience with big data technologies such as Hadoop, Spark, or Google BigQuery.</li>
+                                            <li>Familiarity with AI-driven personalization techniques.</li>
+                                            <li>Passion for music and knowledge of different genres.</li>'
         );
-            array (
-              'job_ref_num'=> 'CY987',
-            );
+          array (
+            'job_ref_num'=> 'CY987',
+            'position_title'=> 'Software Engineer &lpar;Backend&rpar;', 
+            'reports_to' =>'Engineering Manager', 
+            'job_description' => 'SonixWave is looking for a talented Backend Software Engineer 
+                                  to develop and maintain the core infrastructure that powers our
+                                  music recommendation and streaming platform. This role focuses 
+                                  on ensuring seamless data processing and API integrations to
+                                  provide a smooth user experience.',
+
+            'key_responsibilities' => '<li>Design, develop, and maintain scalable backend systems to support high-volume music streaming.</li>
+                                      <li>Build and optimize APIs for real-time music recommendations and user interactions.</li>
+                                      <li>Work closely with data scientists to deploy machine learning models in production.</li>
+                                      <li>Ensure database efficiency, security, and scalability.</li>
+                                      <li>Collaborate with frontend developers to enhance platform responsiveness.</li>
+                                      <li>Troubleshoot and debug backend issues to maintain high system reliability.</li>',
+
+            'qualifications_essential' => '<li>Bachelor&#39;s degree in Computer Science, Software Engineering, or a related field.</li>
+                                            <li>Proficiency in backend programming languages such as Python, Java, or Node.js.</li>
+                                            <li>Experience with cloud platforms (AWS, GCP, or Azure).</li>
+                                            <li>Minimum 3 years of experience in backend development, preferably in a media streaming company.</li>
+                                            <li>Strong knowledge of RESTful API design and database management (SQL & NoSQL).</li>
+                                            <li>Familiarity with microservices architecture and distributed systems.</li>',
+
+            'qualifications_preferable' => '<li>Master&#39;s degree in a related field.</li>
+                                            <li>Experience with containerization tools like Docker and Kubernetes.</li>
+                                            <li>Understanding of music streaming protocols and audio processing technologies.</li>
+                                            <li>Passion for music technology and innovation.</li>'
+          );
         insert_jobs($dbconn, $data);
       }
         
