@@ -243,11 +243,11 @@
     echo "<hr id='career-separator-line'>";	
 
     echo "<div class='jobs-context'>";	
-    echo "<main>";
+      echo "<main>";
     
-    echo "<h1>Career Opportunities</h1>";
+      echo "<h1>Career Opportunities</h1>";
     
-    main();
+      main();
 
       echo "</main>";
         
