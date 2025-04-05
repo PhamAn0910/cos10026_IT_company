@@ -10,15 +10,16 @@ require_once("settings.php");
 session_start();
 
 // 2. Define validation constants
-define('MIN_AGE', 15);
-define('MAX_AGE', 80);
-define('MAX_JOBREF_LENGTH',5);
-define('MAX_POSTCODE_LENGTH',4);
-define('MAX_ADDRESS_LENGTH', 40);
-define('MAX_SUBURB_LENGTH',40);
-define('MAX_NAME_LENGTH', 20);
-define('MIN_PHONE_LENGTH', 8);
-define('MAX_PHONE_LENGTH', 12);
+const MIN_AGE = 15;
+const MAX_AGE = 80;
+const MAX_JOBREF_LENGTH = 5;
+const MAX_POSTCODE_LENGTH = 4;
+const MAX_ADDRESS_LENGTH = 40;
+const MAX_SUBURB_LENGTH = 40;
+const MAX_NAME_LENGTH = 20;
+const MIN_PHONE_LENGTH = 8;
+const MAX_PHONE_LENGTH = 12;
+
 
 // 3. Database functions
 /**
@@ -372,12 +373,11 @@ function validate_address($address) {
     if (empty($address)) {
         return "Street address cannot be empty.";
     }
+    
     if (!preg_match("/^[A-Za-z0-9\s\-\/,.]{1," . MAX_ADDRESS_LENGTH . "}$/", $address)) {
         return "Street address can only contain letters, numbers, spaces, and basic punctuation.";
     }
-    if (strlen($address) > MAX_ADDRESS_LENGTH) {
-        return "Street address must not exceed " . MAX_ADDRESS_LENGTH . " characters.";
-    }
+
     return "";
 }
 
@@ -385,12 +385,11 @@ function validate_suburb($suburb) {
     if (empty($suburb)) {
         return "Suburb/Town cannot be empty.";
     }
+
     if (!preg_match("/^[A-Za-z\s\-']{1," . MAX_SUBURB_LENGTH . "}$/", $suburb)) {
-        return "Suburb/Town can only contain letters, spaces, hyphens and apostrophes.";
+        return "Suburb/Town can only contain letters, spaces and hyphens.";
     }
-    if (strlen($suburb) > MAX_SUBURB_LENGTH) {
-        return "Suburb/Town must not exceed " . MAX_SUBURB_LENGTH . " characters.";
-    }
+
     return "";
 }
 
@@ -481,7 +480,9 @@ function display_error($errors) {
     echo "  <meta name='keywords'     content='HTML5, CSS'>";
     echo "  <meta name='author'       content='Le Ngoc Quynh Trang, Pham Truong Que An'>";
     echo "  <meta name='viewport'     content='width=device-width, initial-scale=1.0'>";
+
     echo "  <title>SonixWave | Application Submission Error Page</title>";
+
     echo "  <link rel='stylesheet' href='styles/style.css'>";
     echo "  <link rel='stylesheet' href='styles/responsive-nav.css'>";
     echo "  <script src='scripts/nav-toggle.js'></script>";
@@ -490,6 +491,7 @@ function display_error($errors) {
     echo "  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css'>";
     echo "  <script src='https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js'></script>";
     echo "</head>";
+
     echo "<body>";
     require_once("header.inc");
     echo '<div class="error-container">';
@@ -514,6 +516,7 @@ function display_error($errors) {
     echo '</div>';
     require_once("footer.inc");
     echo '</body>';
+
     echo '</html>';
 }
 
@@ -526,7 +529,9 @@ function display_success($eoiNumber, $jobRef, $firstName, $lastName, $isUpdate =
     echo "  <meta name='keywords'       content='HTML5, CSS'>";
     echo "  <meta name='author'         content='Le Ngoc Quynh Trang, Pham Truong Que An'>";
     echo "  <meta name='viewport'       content='width=device-width, initial-scale=1.0'>";
+
     echo "  <title>SonixWave | Application Submitted</title>";
+
     echo "  <link rel='stylesheet' href='styles/style.css'>";
     echo "  <link rel='stylesheet' href='styles/responsive-nav.css'>";
     echo "  <script src='scripts/nav-toggle.js'></script>";
@@ -535,6 +540,7 @@ function display_success($eoiNumber, $jobRef, $firstName, $lastName, $isUpdate =
     echo "  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css'>";
     echo "  <script src='https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js'></script>";
     echo "</head>";
+
     echo "<body>";
     require_once("header.inc");
 
@@ -564,8 +570,10 @@ function display_success($eoiNumber, $jobRef, $firstName, $lastName, $isUpdate =
             echo "</div>";
         echo '</div>';
     echo '</div>';
+
     require_once("footer.inc");
     echo '</body>';
+
     echo '</html>';
 }
 
@@ -607,47 +615,55 @@ try {
 
     // 9. Validate all inputs
     $validationErrors = [];
-
     // Validate all fields with detailed error messages
     $jobRefError = validate_job_reference($jobRef);
-    if ($jobRefError !== "") $validationErrors[] = $jobRefError;
-
+    if ($jobRefError !== "") {
+        $validationErrors[] = $jobRefError;
+    }
     $firstNameError = validate_name($firstName, "First name");
-    if ($firstNameError !== "") $validationErrors[] = $firstNameError;
-
+    if ($firstNameError !== "") {
+        $validationErrors[] = $firstNameError;
+    }
     $lastNameError = validate_name($lastName, "Last name");
-    if ($lastNameError !== "") $validationErrors[] = $lastNameError;
-
+    if ($lastNameError !== "") {
+        $validationErrors[] = $lastNameError;
+    }
     $dobError = validate_date($dob);
-    if ($dobError !== "") $validationErrors[] = $dobError;
-
+    if ($dobError !== "") {
+        $validationErrors[] = $dobError;
+    }
     $genderError = validate_gender($gender);
-    if ($genderError !== "") $validationErrors[] = $genderError;
-
+    if ($genderError !== "") {
+        $validationErrors[] = $genderError;
+    }
     $addressError = validate_address($streetAddress);
     if ($addressError !== "") $validationErrors[] = $addressError;
-
     $suburbError = validate_suburb($suburb);
-    if ($suburbError !== "") $validationErrors[] = $suburbError;
-
+    if ($suburbError !== "") {
+        $validationErrors[] = $suburbError;
+    }
     $statePostcodeError = validate_state_postcode($state, $postcode);
-    if ($statePostcodeError !== "") $validationErrors[] = $statePostcodeError;
-
+    if ($statePostcodeError !== "") {
+        $validationErrors[] = $statePostcodeError;
+    }
     $emailError = validate_email($email);
-    if ($emailError !== "") $validationErrors[] = $emailError;
-
+    if ($emailError !== "") {
+        $validationErrors[] = $emailError;
+    }
     $phoneError = validate_phone($phone);
-    if ($phoneError !== "") $validationErrors[] = $phoneError;
-
+    if ($phoneError !== "") {
+        $validationErrors[] = $phoneError;
+    }
     $skillsError = validate_skills($skillsArray, $otherSkills, $otherSkillsChecked);
-    if ($skillsError !== "") $validationErrors[] = $skillsError;
+    if ($skillsError !== "") {
+        $validationErrors[] = $skillsError;
+    }
 
     // 10. Database operations
     if (empty($validationErrors)) {
         try {
             $conn = create_database_connection();
-            create_eoi_table($conn);
-            
+
             // Convert date format for MySQL
             $dateParts = explode('/', $dob);
             $date_of_birth = "{$dateParts[2]}-{$dateParts[1]}-{$dateParts[0]}";
@@ -668,30 +684,45 @@ try {
                 'other_skills' => $otherSkills,
                 'status' => 'New'
             ];
-                   
-            try {
-                // Check for duplicate before inserting
-                $existingEOI = check_duplicate_application($conn, $data);
-                // Update existing EOI if identical
-                if ($existingEOI !== false) {
-                    // check_if_updated function must occur before the update occurs so that there can have difference in existing data and input data
-                    $wasUpdated = check_if_updated($conn, $data, $existingEOI);
-                    $eoiNumber = update_eoi($conn, $data, $existingEOI);
-                    // Pass $wasUpdated to $isUpdate if check_if_updated return output
-                    display_success($eoiNumber, $jobRef, $firstName, $lastName, $wasUpdated);
-                } else {
-                    // Insert new record
-                    $eoiNumber = insert_eoi($conn, $data);
-                    // Pass false to $isUpdate for new submission
-                    display_success($eoiNumber, $jobRef, $firstName, $lastName, false); 
-                }              
-                $conn->close();
+
+            // Check if the 'jobs' table exists using SHOW TABLES query
+            $check_query = "SHOW TABLES LIKE 'eoi'";
+            $check_result = mysqli_query($conn, $check_query);
+
+            if (!$check_result) {
+                error_log("Check query failed: " . mysqli_error($conn));
+                throw new Exception("Failed to check existing eoi table");
+            }
+
+            if (mysqli_num_rows($check_result) === 0) {
+                // Create the table and insert sample jobs if it doesn't exist
+                create_eoi_table($conn);
                 
-            } catch (Exception $e) {
-                $conn->close();
-                // Display the actual error message from the duplicate check
-                display_error([$e->getMessage()]);
-                return;
+            } else {
+                try {
+                    // Check for duplicate before inserting
+                    $existingEOI = check_duplicate_application($conn, $data);
+                    // Update existing EOI if identical
+                    if ($existingEOI !== false) {
+                        // check_if_updated function must occur before the update occurs so that there can have difference in existing data and input data
+                        $wasUpdated = check_if_updated($conn, $data, $existingEOI);
+                        $eoiNumber = update_eoi($conn, $data, $existingEOI);
+                        // Pass $wasUpdated to $isUpdate if check_if_updated return output
+                        display_success($eoiNumber, $jobRef, $firstName, $lastName, $wasUpdated);
+                    } else {
+                        // Insert new record
+                        $eoiNumber = insert_eoi($conn, $data);
+                        // Pass false to $isUpdate for new submission
+                        display_success($eoiNumber, $jobRef, $firstName, $lastName, false); 
+                    }              
+                    $conn->close();
+                
+                } catch (Exception $e) {
+                    $conn->close();
+                    // Display the actual error message from the duplicate check
+                    display_error([$e->getMessage()]);
+                    return;
+                }
             }
             
         } catch (Exception $e) {

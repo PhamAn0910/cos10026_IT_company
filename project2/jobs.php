@@ -19,10 +19,40 @@
 </head>
 
 <body>
-<?php 
+  <!-- Display Career Page -->
+  <?php 
+  require_once 'settings.php'; // for database connection
+  include 'header.inc'; // Navigation Menu ?>
+
+  <hr id='career-separator-line'>
+  <div class='jobs-context'>	
+  <main>    
+  <h1>Career Opportunities</h1>    
+    <?php main() // Call main function above ?>
+  </main>
+
+  <!-- Aside - Sidebar -->
+  <aside> 
+    <h2>Why <br> <span>Join Us?</span></h2>
+      <section>
+        <p><i>SonixWave offers a dynamic and innovative work environment, 
+          competitive salaries, and opportunities for growth in the tech industry.</i>
+        </p>
+        <h3>Employee Benefits</h3>
+          <ul>
+            <li>Flexible working hours</li>
+            <li>Remote work options</li>
+            <li>Health and wellness programs</li>
+            <li>Professional development and training</li>
+          </ul>
+      </section>
+    </aside>
+  </div> 
+
+  <?php include 'footer.inc'; // Footer 
+  
   error_reporting(E_ALL);
   ini_set('display_errors', 1);
-  require_once 'settings.php'; // for database connection
 
   /**
    * Create database connection with error handling
@@ -200,6 +230,81 @@
   function main() {
     try {
       $dbconn = create_database_connection();
+      
+      // Job 1: Data Analyst
+      $job1 = [
+        'job_ref_num' => 'SE123',
+        'position_title' => 'Data Analyst',
+        'salary_range' => '$80,000 - $110,000 per annum',
+        'reports_to'=> 'Head of Data Science',
+        'job_description' 
+        => 
+        'SonixWave is seeking a skilled Data Analyst to collect, analyze, and interpret user 
+        listening patterns to enhance personalized music recommendations. This role plays a 
+        crucial part in increasing user engagement by optimizing song and genre suggestions.',
+        'key_responsibilities' 
+        => 
+        '<li>Analyze large datasets of user listening behaviors to identify trends and patterns.</li>         
+        <li>Develop and refine algorithms for personalized music recommendations.</li>
+        <li>Collaborate with software engineers and product managers to integrate data-driven insights into the platform.</li>
+        <li>Conduct A/B testing to measure the effectiveness of recommendation models.</li>
+        <li>Prepare and present data-driven reports to stakeholders.</li>
+        <li>Ensure data integrity and compliance with privacy regulations.</li>',
+        'qualifications_essential' 
+        => 
+        '<li>Bachelor&#39;s degree in Data Science, Statistics, Computer Science, or a related field.</li>
+        <li>Proficiency in SQL and Python/R for data analysis.</li>
+        <li>Strong experience with data visualization tools (e.g., Tableau, Power BI, Matplotlib).</li>
+        <li>Minimum 3 years of experience in data analytics, preferably in a music or media tech company.</li>
+        <li>Understanding of machine learning techniques related to recommendation systems.</li>
+        <li>Strong analytical and problem-solving skills.</li>',
+        'qualifications_preferable' => 
+        '<li>Master&#39;s degree in a related field.</li>
+        <li>Experience with big data technologies such as Hadoop, Spark, or Google BigQuery.</li>
+        <li>Familiarity with AI-driven personalization techniques.</li>
+        <li>Passion for music and knowledge of different genres.</li>'
+      ];
+      
+      // Job 2: Backend Software Engineer
+      $job2 = [
+        'job_ref_num'=> 'CY987',
+        'position_title'=> 'Software Engineer &lpar;Backend&rpar;',
+        'salary_range' => '$90,000 - $130,000 per annum', 
+        'reports_to' =>'Engineering Manager', 
+
+        'job_description' 
+        => 
+        'SonixWave is looking for a talented Backend Software Engineer 
+        to develop and maintain the core infrastructure that powers our
+        music recommendation and streaming platform. This role focuses 
+        on ensuring seamless data processing and API integrations to
+        provide a smooth user experience.',
+
+        'key_responsibilities' 
+        => 
+        '<li>Design, develop, and maintain scalable backend systems to support high-volume music streaming.</li>
+        <li>Build and optimize APIs for real-time music recommendations and user interactions.</li>
+        <li>Work closely with data scientists to deploy machine learning models in production.</li>
+        <li>Ensure database efficiency, security, and scalability.</li>
+        <li>Collaborate with frontend developers to enhance platform responsiveness.</li>
+        <li>Troubleshoot and debug backend issues to maintain high system reliability.</li>',
+
+        'qualifications_essential' 
+        => 
+        '<li>Bachelor&#39;s degree in Computer Science, Software Engineering, or a related field.</li>
+        <li>Proficiency in backend programming languages such as Python, Java, or Node.js.</li>
+        <li>Experience with cloud platforms (AWS, GCP, or Azure).</li>
+        <li>Minimum 3 years of experience in backend development, preferably in a media streaming company.</li>
+        <li>Strong knowledge of RESTful API design and database management (SQL & NoSQL).</li>
+        <li>Familiarity with microservices architecture and distributed systems.</li>',
+
+        'qualifications_preferable' 
+        => 
+        '<li>Master&#39;s degree in a related field.</li>
+        <li>Experience with containerization tools like Docker and Kubernetes.</li>
+        <li>Understanding of music streaming protocols and audio processing technologies.</li>
+        <li>Passion for music technology and innovation.</li>'
+      ];
 
       // Check if the 'jobs' table exists using SHOW TABLES query
       $check_query = "SHOW TABLES LIKE 'jobs'";
@@ -213,66 +318,8 @@
       if (mysqli_num_rows($check_result) === 0) {
         // Create the table and insert sample jobs if it doesn't exist
         create_jobs_table($dbconn);
-
-        // Job 1: Data Analyst
-        $job1 = [
-          'job_ref_num' => 'SE123',
-          'position_title' => 'Data Analyst',
-          'salary_range' => '$80,000 - $110,000 per annum',
-          'reports_to'=> 'Head of Data Science',
-          'job_description' => 'SonixWave is seeking a skilled Data Analyst to collect, analyze, and interpret user 
-                                listening patterns to enhance personalized music recommendations. This role plays a 
-                                crucial part in increasing user engagement by optimizing song and genre suggestions.',
-          'key_responsibilities' => '<li>Analyze large datasets of user listening behaviors to identify trends and patterns.</li>
-                                    <li>Develop and refine algorithms for personalized music recommendations.</li>
-                                    <li>Collaborate with software engineers and product managers to integrate data-driven insights into the platform.</li>
-                                    <li>Conduct A/B testing to measure the effectiveness of recommendation models.</li>
-                                    <li>Prepare and present data-driven reports to stakeholders.</li>
-                                    <li>Ensure data integrity and compliance with privacy regulations.</li>',
-          'qualifications_essential' => '<li>Bachelor&#39;s degree in Data Science, Statistics, Computer Science, or a related field.</li>
-                                        <li>Proficiency in SQL and Python/R for data analysis.</li>
-                                        <li>Strong experience with data visualization tools (e.g., Tableau, Power BI, Matplotlib).</li>
-                                        <li>Minimum 3 years of experience in data analytics, preferably in a music or media tech company.</li>
-                                        <li>Understanding of machine learning techniques related to recommendation systems.</li>
-                                        <li>Strong analytical and problem-solving skills.</li>',
-          'qualifications_preferable' => '<li>Master&#39;s degree in a related field.</li>
-                                          <li>Experience with big data technologies such as Hadoop, Spark, or Google BigQuery.</li>
-                                          <li>Familiarity with AI-driven personalization techniques.</li>
-                                          <li>Passion for music and knowledge of different genres.</li>'
-        ];
-        
-        // Job 2: Backend Software Engineer
-        $job2 = [
-          'job_ref_num'=> 'CY987',
-          'position_title'=> 'Software Engineer &lpar;Backend&rpar;',
-          'salary_range' => '$90,000 - $130,000 per annum', 
-          'reports_to' =>'Engineering Manager', 
-          'job_description' => 'SonixWave is looking for a talented Backend Software Engineer 
-                                to develop and maintain the core infrastructure that powers our
-                                music recommendation and streaming platform. This role focuses 
-                                on ensuring seamless data processing and API integrations to
-                                provide a smooth user experience.',
-          'key_responsibilities' => '<li>Design, develop, and maintain scalable backend systems to support high-volume music streaming.</li>
-                                    <li>Build and optimize APIs for real-time music recommendations and user interactions.</li>
-                                    <li>Work closely with data scientists to deploy machine learning models in production.</li>
-                                    <li>Ensure database efficiency, security, and scalability.</li>
-                                    <li>Collaborate with frontend developers to enhance platform responsiveness.</li>
-                                    <li>Troubleshoot and debug backend issues to maintain high system reliability.</li>',
-          'qualifications_essential' => '<li>Bachelor&#39;s degree in Computer Science, Software Engineering, or a related field.</li>
-                                          <li>Proficiency in backend programming languages such as Python, Java, or Node.js.</li>
-                                          <li>Experience with cloud platforms (AWS, GCP, or Azure).</li>
-                                          <li>Minimum 3 years of experience in backend development, preferably in a media streaming company.</li>
-                                          <li>Strong knowledge of RESTful API design and database management (SQL & NoSQL).</li>
-                                          <li>Familiarity with microservices architecture and distributed systems.</li>',
-          'qualifications_preferable' => '<li>Master&#39;s degree in a related field.</li>
-                                          <li>Experience with containerization tools like Docker and Kubernetes.</li>
-                                          <li>Understanding of music streaming protocols and audio processing technologies.</li>
-                                          <li>Passion for music technology and innovation.</li>'
-        ];
-
         insert_jobs($dbconn, $job1, $job2);
-      }
-      
+      }     
       display_jobs($dbconn);
         
     } catch (Exception $e) {
@@ -280,46 +327,7 @@
       echo "<p>An error occurred. Please try again later. Error: " . htmlspecialchars($e->getMessage()) . "</p>";
     }
   }
-  
-  // Display Career Page
-  try {
-    include 'header.inc'; // Navigation Menu
-
-    echo "<hr id='career-separator-line'>";	
-
-    echo "<div class='jobs-context'>";	
-      echo "<main>";
-    
-      echo "<h1>Career Opportunities</h1>";
-    
-      main();
-
-      echo "</main>";
-        
-      echo "<aside>"; // Aside - Sidebar
-      echo "<h2>Why <br> <span>Join Us?</span></h2>";
-      echo "<section>";
-      echo "<p><i>SonixWave offers a dynamic and innovative work environment, competitive 
-        salaries, and opportunities for growth in the tech industry.</i></p>";
-
-      echo "<h3>Employee Benefits</h3>";
-      echo "<ul>";	
-      echo "<li>Flexible working hours</li>";
-      echo "<li>Remote work options</li>";
-      echo "<li>Health and wellness programs</li>";
-      echo "<li>Professional development and training</li>";
-      echo "</ul>";
-      echo "</section>";
-      echo "</aside>";
-
-    echo "</div>"; // Close jobs-context div
-
-    include 'footer.inc'; // Footer
-  } catch (Exception $e) {
-    error_log("Error in jobs.php: " . $e->getMessage());
-    echo "<p>An error occurred loading the page. Please try again later.</p>";
-  }
-?>
+?>  
 
 <script>
   AOS.init();
